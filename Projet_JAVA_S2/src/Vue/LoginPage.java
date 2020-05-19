@@ -5,8 +5,6 @@
  */
 package Vue;
 
-import DAO.UtilisateurDAO;
-import Modele.Utilisateur;
 import controleur.LoginPageControleur;
 import java.awt.*;
 import javax.swing.*;

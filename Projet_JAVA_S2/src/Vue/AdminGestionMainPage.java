@@ -5,10 +5,25 @@
  */
 package Vue;
 
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+
 /**
  *
  * @author Nassim
  */
-public class AdminGestionMainPage {
+public class AdminGestionMainPage extends JFrame implements ActionListener
+{
+    
+    
+    
+    
+    
+    
+    @Override
+    public void actionPerformed(ActionEvent arg0) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
 }

@@ -22,6 +22,24 @@ public class AdminGestionMainPage extends JFrame implements ActionListener
     private int WINDOW_WIDTH = 900;
     private int WINDOW_HEIGHT = 900;
     
+    /// LA BARRE DE MENU
+    private JMenuBar M_barreDeMenus = new JMenuBar();  // barre de menus
+    
+    private JMenu JM_edt = new JMenu("Visualiser un emploi du temps");
+    private JMenu JM_seances = new JMenu("Gérer les séances");
+    private JMenu JM_cours = new JMenu("Gérer les matières");
+    private JMenu JM_reporting = new JMenu("Module reporting");
+    
+    private JMenuItem JMI_edt1 = new JMenuItem("Selectionner un emploi du temps");
+    private JMenuItem JMI_seances1 = new JMenuItem("Ajouter une séance");
+    private JMenuItem JMI_seances2 = new JMenuItem("Modifier une séance");
+    private JMenuItem JMI_seances3 = new JMenuItem("Supprimer une séance");
+    private JMenuItem JMI_cours1 = new JMenuItem("Ajouter une matière");
+    private JMenuItem JMI_cours2 = new JMenuItem("Modifier une matière");
+    private JMenuItem JMI_cours3 = new JMenuItem("Supprimer une matière");
+    
+    
+    
     public AdminGestionMainPage (int height, int width, AdminGestionControleur cont)
     {
         // stocker le controleur
@@ -55,6 +73,29 @@ public class AdminGestionMainPage extends JFrame implements ActionListener
     
     public void buildPanel()
     {
+        // Border layout pour le panel global
+        panelGlobal.setLayout(new BorderLayout());
+        
+        // dans la partie nord: on va ajouter la barre de menu
+        // Mettre les parties du menu dans leurs catégories
+        JM_edt.add(JMI_edt1);
+        JM_seances.add(JMI_seances1);
+        JM_seances.add(JMI_seances2);
+        JM_seances.add(JMI_seances3);
+        JM_cours.add(JMI_cours1);
+        JM_cours.add(JMI_cours2);
+        JM_cours.add(JMI_cours3);
+        
+        
+        //Ajouter les menus dans la barre de menu de gauche à droite
+        M_barreDeMenus.add(JM_edt);
+        M_barreDeMenus.add(JM_seances);
+        M_barreDeMenus.add(JM_cours);
+        M_barreDeMenus.add(JM_reporting);
+        M_barreDeMenus.setBackground(Color.white);
+        
+        // Ajouter la barre de menu dans la partie nord du panel global
+        panelGlobal.add(M_barreDeMenus, BorderLayout.NORTH);
         
     }
     

@@ -26,8 +26,10 @@ public class main {
     
     public static void main(String[] args) {
        
-        LoginPageControleur lpc = new LoginPageControleur();
+        //LoginPageControleur lpc = new LoginPageControleur();
         
+        AdminGestionControleur agc = new AdminGestionControleur();
+        agc.ouvrirAdminpage();
         
     }
     

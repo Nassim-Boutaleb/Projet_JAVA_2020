@@ -35,7 +35,7 @@ public class AdminGestionControleur
     
     public void ouvrirAdminpage ()
     {
-        adminPage = new AdminGestionMainPage(width,height,this);
+        adminPage = new AdminGestionMainPage(height,width,this);
         adminPage.setVisible (true);
     }
 }

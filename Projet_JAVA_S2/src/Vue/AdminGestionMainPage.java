@@ -92,10 +92,12 @@ public class AdminGestionMainPage extends JFrame implements ActionListener
         M_barreDeMenus.add(JM_seances);
         M_barreDeMenus.add(JM_cours);
         M_barreDeMenus.add(JM_reporting);
-        M_barreDeMenus.setBackground(Color.white);
+        M_barreDeMenus.setBackground(Color.blue);
         
         // Ajouter la barre de menu dans la partie nord du panel global
         panelGlobal.add(M_barreDeMenus, BorderLayout.NORTH);
+        
+        
         
     }
     

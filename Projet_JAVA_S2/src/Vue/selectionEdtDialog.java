@@ -17,7 +17,7 @@ import javax.swing.*;
  */
 // Source : https://openclassrooms.com/fr/courses/26832-apprenez-a-programmer-en-java/24770-gerez-des-menus-et-des-boites-de-dialogue
 /* La différence entre une JDialog et JFrame est que la JDialog bloque la JFrame parente et ne peut pas être réduite */
-public class selectionEdtDialog extends JDialog implements ActionListener
+public class SelectionEdtDialog extends JDialog implements ActionListener
 {
     // Controleur
     private AdminGestionControleur controleur ;
@@ -60,7 +60,7 @@ public class selectionEdtDialog extends JDialog implements ActionListener
     private JButton B_Salle;
 
     // Paramètres : parent = la fenêtre parente (peut etre null) , modal = si la dialogue est bloquante ou non et les listes des promotions, étudiants et enseignants et salles (en f° du site ?)
-    public selectionEdtDialog (AdminGestionControleur cont, JFrame parent, String titre, boolean modal )//, String [] listePromo , String [] listeEtudiants , String [] listeEnseignants)
+    public SelectionEdtDialog (AdminGestionControleur cont, JFrame parent, String titre, boolean modal )//, String [] listePromo , String [] listeEtudiants , String [] listeEnseignants)
     {
         super(parent,titre,modal);
         

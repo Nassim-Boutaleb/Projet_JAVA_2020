@@ -197,6 +197,7 @@ public class LoginPage extends JFrame implements ActionListener
                
         }
 
+        @Override
         public void paintComponent(Graphics g) 
         {
           g.drawImage(m_img, 0, 0, null);

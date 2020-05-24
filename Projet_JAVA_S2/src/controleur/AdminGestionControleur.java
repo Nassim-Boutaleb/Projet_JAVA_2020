@@ -17,7 +17,7 @@ import javax.swing.JOptionPane;
 public class AdminGestionControleur 
 {
     private AdminGestionMainPage adminPage ;  // stockage de la vue (page graphique)
-    private selectionEdtDialog sd;  // la boite de dialogue de séléction d'edt
+    private SelectionEdtDialog sd;  // la boite de dialogue de séléction d'edt
     private AjouterSeanceDialog ajd;  // la boite de dialogue d'ajout de séance
     private int width;
     private int height;
@@ -60,10 +60,10 @@ public class AdminGestionControleur
         // récupérer la lsite des salles
         
         // Afficher la boite de dialogue permettant de choisir l'edt désiré
-        sd = new selectionEdtDialog(this,adminPage,"Sélectionner emploi du temps à afficher",true);
+        sd = new SelectionEdtDialog(this,adminPage,"Sélectionner emploi du temps à afficher",true);
     }
     
-    // Une fois le choix de l'edt à afficher effectué au niveau de la vue selectionEdtDialog
+    // Une fois le choix de l'edt à afficher effectué au niveau de la vue SelectionEdtDialog
     // récupérer les infos de l'edt à afficher et l'afficher en appelant la méthode de la vue
     // AdminGestionMainPage correspondante
     // type = type d'edt à afficher (promo,etudiant,..) et donnée = caractérisation (nom promo, nom salle ,...)

@@ -16,8 +16,12 @@ import controleur.*;
  */
 public class AdminGestionMainPage extends JFrame implements ActionListener
 {
+    // Controleur
+    private AdminGestionControleur controleur ; 
+    
     private JPanel panelGlobal;  // panel global
-    private AdminGestionControleur controleur ;
+    private ImagePanel panelImage;  // panel de l'image
+    private Image m_img;
     
     private int WINDOW_WIDTH = 900;
     private int WINDOW_HEIGHT = 900;
@@ -35,9 +39,8 @@ public class AdminGestionMainPage extends JFrame implements ActionListener
     private JMenuItem JMI_seances2 = new JMenuItem("Modifier une séance");
     private JMenuItem JMI_seances3 = new JMenuItem("Supprimer une séance");
     private JMenuItem JMI_cours1 = new JMenuItem("Ajouter une matière");
-    private JMenuItem JMI_cours2 = new JMenuItem("Modifier une matière");
-    private JMenuItem JMI_cours3 = new JMenuItem("Supprimer une matière");
-    
+    private JMenuItem JMI_cours2 = new JMenuItem("Modifier/Supprimer une matière");
+    private JMenuItem JMI_reporting1 = new JMenuItem("Utilisation des salles");
     
     
     public AdminGestionMainPage (int height, int width, AdminGestionControleur cont)
@@ -67,7 +70,7 @@ public class AdminGestionMainPage extends JFrame implements ActionListener
         // Ajouter le panel global à la frame
         add(panelGlobal);
         
-        // Nécéssaire pour l'image de fond
+        // régler la taille
         pack();
     }
     
@@ -78,13 +81,27 @@ public class AdminGestionMainPage extends JFrame implements ActionListener
         
         // dans la partie nord: on va ajouter la barre de menu
         // Mettre les parties du menu dans leurs catégories
+        // ajouter les action listener sur chacun des items du menu
+        JMI_edt1.addActionListener(this);
         JM_edt.add(JMI_edt1);
+        
+        JMI_seances1.addActionListener(this);
         JM_seances.add(JMI_seances1);
+        
+        JMI_seances2.addActionListener(this);
         JM_seances.add(JMI_seances2);
+        
+        JMI_seances3.addActionListener(this);
         JM_seances.add(JMI_seances3);
+        
+        JMI_cours1.addActionListener(this);
         JM_cours.add(JMI_cours1);
+        
+        JMI_cours2.addActionListener(this);
         JM_cours.add(JMI_cours2);
-        JM_cours.add(JMI_cours3);
+        
+        JMI_reporting1.addActionListener(this);
+        JM_reporting.add(JMI_reporting1);
         
         
         //Ajouter les menus dans la barre de menu de gauche à droite
@@ -94,17 +111,95 @@ public class AdminGestionMainPage extends JFrame implements ActionListener
         M_barreDeMenus.add(JM_reporting);
         M_barreDeMenus.setBackground(Color.white);
         
-        // Ajouter la barre de menu dans la partie nord du panel global
-        panelGlobal.add(M_barreDeMenus, BorderLayout.NORTH);
+        // Ajouter la barre de menu (panelGlobal.add(M_barreDeMenus, BorderLayout.NORTH); )
+        setJMenuBar(M_barreDeMenus);
         
+        // Et dans le reste (partie sud) : une image ?
+        panelImage = new ImagePanel(
+        new ImageIcon("Images/eceOld.jpg").getImage());
         
+        panelGlobal.add(panelImage);
+        
+         
         
     }
     
     
     @Override
-    public void actionPerformed(ActionEvent arg0) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void actionPerformed(ActionEvent e) 
+    {
+        // Clic sur sélectionner un emploi du temps
+        if (e.getSource() == JMI_edt1)
+        {
+            controleur.selectionner_afficher_edt();
+        }
+        
+        // Clic sur ajouter une séance
+        else if (e.getSource() == JMI_seances1)
+        {
+            controleur.affichage_menu_ajout_seance();
+        }
+        
+        // Clic sur modifier une séance
+        else if (e.getSource() == JMI_seances2)
+        {
+            JOptionPane.showMessageDialog(this,"Affichez un emploi du temps avec \"Sélectionnez un emploi du temps\""
+                    + " puis cliquez sur la séance concernée et revenez sur ce menu."
+                    + "\nVous pouvez aussi effectuer un clic droit sur la séance concernée.");
+        }
+        
+        // Clic sur supprimer une séance
+        else if (e.getSource() == JMI_seances3)
+        {
+            JOptionPane.showMessageDialog(this,"Affichez un emploi du temps avec \"Sélectionnez un emploi du temps\""
+                    + " puis cliquez sur la séance concernée et revenez sur ce menu."
+                    + "\nVous pouvez aussi effectuer un clic droit sur la séance concernée.");
+        }
+        
+        // Clic sur ajouter matière
+        else if (e.getSource() == JMI_cours1)
+        {
+            controleur.ajouter_matière();
+        }
+        
+        // Clic sur modifier/supprimer matière :
+        else if (e.getSource() == JMI_cours2)
+        {
+           
+        }
+        
+    }
+    
+    
+    private class ImagePanel extends JPanel 
+    {
+        public ImagePanel(String img) 
+        {
+          this(new ImageIcon(img).getImage());
+        }
+
+        public ImagePanel(Image imge) 
+        {
+            m_img = imge;
+            Dimension size = new Dimension(m_img.getWidth(null), m_img.getHeight(null));
+            
+            
+            //Dimension size = new Dimension(900,height);
+            setPreferredSize(size);
+            setMinimumSize(size);
+            setMaximumSize(size);
+            setSize(size);
+            
+
+               
+        }
+
+        public void paintComponent(Graphics g) 
+        {
+          g.drawImage(m_img, 0, 0, null);
+        }
+
+    
     }
     
 }

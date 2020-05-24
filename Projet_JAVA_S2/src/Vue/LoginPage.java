@@ -132,6 +132,26 @@ public class LoginPage extends JFrame implements ActionListener
         
         // Ajouter le panel des contenus au reste du layout
         panelGlobal.add(contenuLog);
+        
+        // Au clic : enlever les indications
+        T_email.addMouseListener(new MouseAdapter(){
+            @Override
+            public void mouseClicked(MouseEvent e){
+                
+               if(T_email.getText().equals("Entrez votre email ECE ")){ 
+                  T_email.setText("");
+               }
+            }
+        });
+        T_passwd.addMouseListener(new MouseAdapter(){
+            @Override
+            public void mouseClicked(MouseEvent e){
+                
+               if(T_passwd.getText().equals("Entrez votre mot de passe")){ 
+                  T_passwd.setText("");
+               }
+            }
+        });
     }
     
 
@@ -151,6 +171,7 @@ public class LoginPage extends JFrame implements ActionListener
     }
         
  
+    
     
     
     private class ImagePanel extends JPanel 

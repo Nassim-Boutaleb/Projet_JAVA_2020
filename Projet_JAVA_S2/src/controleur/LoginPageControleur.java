@@ -72,9 +72,11 @@ public class LoginPageControleur {
             {
                
                 JOptionPane.showMessageDialog(logPage,"Connexion réussie. Bonjour "+ut.getPrenom()+" "+ut.getNom());
-           
+                logPage.setVisible(false);
+                new EdtControleur();
+                
                 // Vérfier de qui il s'agit
-                if (ut.getDroit() == 1)  // etudiant
+                /*if (ut.getDroit() == 1)  // etudiant
                 {
                     // instancier un étudiant
                     
@@ -84,7 +86,7 @@ public class LoginPageControleur {
                     // Créer nouveau controleur EdtControleur
                     
                     
-                }
+                } */
             }
             
             // les mots de passe ne correspondent pas

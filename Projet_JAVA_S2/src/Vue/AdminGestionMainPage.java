@@ -165,7 +165,7 @@ public class AdminGestionMainPage extends JFrame implements ActionListener
         // Clic sur modifier/supprimer matière :
         else if (e.getSource() == JMI_cours2)
         {
-           
+           controleur.modifier_supprimer_matiere();
         }
         
     }

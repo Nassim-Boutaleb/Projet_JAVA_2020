@@ -17,8 +17,13 @@ import javax.swing.JOptionPane;
 public class AdminGestionControleur 
 {
     private AdminGestionMainPage adminPage ;  // stockage de la vue (page graphique)
+    
+    // Les boites de dialogue
     private SelectionEdtDialog sd;  // la boite de dialogue de séléction d'edt
     private AjouterSeanceDialog ajd;  // la boite de dialogue d'ajout de séance
+    private Modifier_supprimer_cours modSuppCours ; // la boite de dialogue de gestion d'un cours
+   
+    // tailles
     private int width;
     private int height;
     
@@ -86,8 +91,8 @@ public class AdminGestionControleur
     }
     
     // Clic sur modifier une matière
-    public void modifier_matiere ()
+    public void modifier_supprimer_matiere ()
     {
-        
+        modSuppCours = new Modifier_supprimer_cours(this, adminPage, "Gestion des cours", true);
     }
 }

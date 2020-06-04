@@ -71,7 +71,7 @@ public class LoginPageControleur {
             if (passwdBDD.equals(passwd))
             {
                
-                JOptionPane.showMessageDialog(logPage,"Connexion réussie. Bonjour "+ut.getPrenom()+" "+ut.getNom());
+                //JOptionPane.showMessageDialog(logPage,"Connexion réussie. Bonjour "+ut.getPrenom()+" "+ut.getNom());
                 logPage.setVisible(false);
                 new EdtControleur();
                 

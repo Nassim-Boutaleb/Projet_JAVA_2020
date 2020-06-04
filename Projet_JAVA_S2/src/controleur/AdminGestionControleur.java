@@ -5,9 +5,12 @@
  */
 package controleur;
 
+import DAO.PromotionDAO;
 import Vue.*;
 import java.awt.*;
 import javax.swing.JOptionPane;
+import Modele.*;
+import java.util.ArrayList;
 
 
 /**
@@ -51,21 +54,20 @@ public class AdminGestionControleur
     
     // cette méthode récupéère la liste des promotions, étudiants , enseignants , salles
     // présents dans la base de données et ouvre une fenetre/boite de dialogue
-    // de type ??? pour permettre à l'admin de choisir l'edt qu'il veut afficher
+    // de type JDialog pour permettre à l'admin de choisir l'edt qu'il veut afficher
     public void selectionner_afficher_edt ()
     {
-        //Récupérer la liste des promotions
-        
-        // récupérer la liste des étudiants 
-        
-        // récupérer la liste des enseignants 
-        
-        // Récupérer la liste des sites
-        
-        // récupérer la lsite des salles
-        
         // Afficher la boite de dialogue permettant de choisir l'edt désiré
         sd = new SelectionEdtDialog(this,adminPage,"Sélectionner emploi du temps à afficher",true);
+    }
+    
+    // cette méthode est normalement appelée par le constructeur de SelectionEdtDialog
+    // elle renvoie la liste des promotions stockées en BDD
+    public ArrayList <Promotion> get_liste_promos ()
+    {
+        ArrayList <Promotion> liste_promo = new ArrayList<>(100);
+        PromotionDAO pdao = new PromotionDAO();
+        
     }
     
     // Une fois le choix de l'edt à afficher effectué au niveau de la vue SelectionEdtDialog
@@ -90,7 +92,7 @@ public class AdminGestionControleur
         String matiere = JOptionPane.showInputDialog(adminPage,"Saisir le nom de la matière à ajouter");
     }
     
-    // Clic sur modifier une matière
+    // Clic sur modifier une matière : on ouvre une JDialog
     public void modifier_supprimer_matiere ()
     {
         modSuppCours = new Modifier_supprimer_cours(this, adminPage, "Gestion des cours", true);

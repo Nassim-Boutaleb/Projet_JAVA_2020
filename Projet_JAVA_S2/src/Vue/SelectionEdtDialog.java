@@ -60,7 +60,7 @@ public class SelectionEdtDialog extends JDialog implements ActionListener
     private JButton B_Salle;
 
     // Paramètres : parent = la fenêtre parente (peut etre null) , modal = si la dialogue est bloquante ou non et les listes des promotions, étudiants et enseignants et salles (en f° du site ?)
-    public SelectionEdtDialog (AdminGestionControleur cont, JFrame parent, String titre, boolean modal )//, String [] listePromo , String [] listeEtudiants , String [] listeEnseignants)
+    public SelectionEdtDialog (AdminGestionControleur cont, JFrame parent, String titre, boolean modal )
     {
         super(parent,titre,modal);
         

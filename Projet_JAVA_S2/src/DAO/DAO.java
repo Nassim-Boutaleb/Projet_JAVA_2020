@@ -15,11 +15,13 @@ public abstract class DAO <T>
 {
     protected Connection connect = null;
     
+    // Constructeur prenant en paramètre une connexion
     public DAO (Connection conn)
     {
         connect = conn; 
     }
     
+    // Constructeur qui crée lui-même la connexion
     public DAO ()
     {
         try {
@@ -38,6 +40,7 @@ public abstract class DAO <T>
         
     }
     
+    // Méthodes abstraites à implémenter par les classes filles
     public abstract boolean create ();
     public abstract boolean update ();
     public abstract boolean delete ();

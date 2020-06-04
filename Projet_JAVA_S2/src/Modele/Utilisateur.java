@@ -1,8 +1,11 @@
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
+
 package Modele;
 
 import DAO.UtilisateurDAO;
@@ -17,7 +20,7 @@ import javax.swing.JOptionPane;
  */
 public class Utilisateur {
     
-    private int id;
+    int id;
     private String email;
     private String passwd;
     private String nom;
@@ -63,6 +66,16 @@ public class Utilisateur {
         // récupérer l'utilisateur depuis la BDD
         UtilisateurDAO udao = new UtilisateurDAO();
         Utilisateur ut = udao.find(email);
+        
+        return ut;
+    }
+    
+    public static Utilisateur charger_utilisateur_BDD (int id)
+    {
+        
+        // récupérer l'utilisateur depuis la BDD
+        UtilisateurDAO udao = new UtilisateurDAO();
+        Utilisateur ut = udao.find(id);
         
         return ut;
     }

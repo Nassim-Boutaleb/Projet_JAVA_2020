@@ -7,6 +7,7 @@ package DAO;
 
 import Modele.*;
 import java.sql.*;
+import java.util.ArrayList;
 
 
 /**
@@ -47,6 +48,8 @@ public class PromotionDAO extends DAO
      * @return
      */
     @Override
+    // rechercher un Promotion à partir de son id
+    // rend null si non trouvé 
     public Promotion find(int id) 
     {
         Promotion promo;
@@ -80,7 +83,7 @@ public class PromotionDAO extends DAO
     }
     
     
-    // rechercher un Promotion à partir de son id
+    // rechercher un Promotion à partir de son nom
     // rend null si non trouvé 
 
     /**
@@ -118,6 +121,48 @@ public class PromotionDAO extends DAO
         
         // retourner Promotion rempli ou null
         return promo;
+    }
+    
+    // cette méthode permet de récupérer la totalité des promotions stockées dans la BDD
+
+    /**
+     *
+     * @return
+     */
+    public ArrayList<Promotion> getAllPromotions ()
+    {
+        ArrayList<Promotion> liste_promos = new ArrayList<>(100);
+        
+        try 
+        {
+            Statement stmt=connect.createStatement(); 
+
+            
+            ResultSet rs=stmt.executeQuery("SELECT * FROM promotion");  
+
+            
+            
+            while (rs.next())  // si rien n'est trouvé on ne rentre pas dans le while
+            {                
+                int id = rs.getInt(1);
+                String nom = rs.getString(2);
+               
+                // Créer Promotion
+                Promotion promo = new Promotion(id,nom);
+                
+                // L'ajouter à la liste
+                liste_promos.add(promo);
+                
+            }
+
+            
+        }
+        catch(SQLException e) 
+        {
+            System.out.println(e.getMessage());
+        } 
+        
+        return liste_promos;
     }
     
 }

@@ -6,6 +6,7 @@
 package Modele;
 
 import DAO.*;
+import java.util.ArrayList;
 
 
 /**
@@ -51,6 +52,19 @@ public class Etudiant extends Utilisateur
         Etudiant ut = udao.find(id);
         
         return ut;
+    }
+    
+    /**
+     *
+     * @return
+     */
+    // cette méthode retourne une array list avec tous les étudiants dans la BDD
+    public static ArrayList <Etudiant> getListeEtudiants ()
+    {
+        ArrayList <Etudiant> liste_etu = new ArrayList<>(100);
+        EtudiantDAO etuDAO = new EtudiantDAO();
+        liste_etu = etuDAO.getAllEtudiants();
+        return liste_etu;
     }
     
     

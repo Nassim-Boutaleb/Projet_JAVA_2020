@@ -210,4 +210,46 @@ public EnseignantDAO (Connection conn)
         return ens;
     }
     
+    // Cette méthode renvoie une arrayList avec tous les étudiants stockés en BDD
+    public ArrayList <Enseignant> getAllEnseignants ()
+    {
+        ArrayList<Enseignant> liste_enseignants = new ArrayList<>(100);
+       try 
+        {
+            Statement stmt=connect.createStatement(); 
+
+            // récupérer tous les étudiants
+            ResultSet rs=stmt.executeQuery("SELECT * FROM enseignant ");  
+
+            
+            
+            while (rs.next())  // si rien n'est trouvé on ne rentre pas dans le while
+            {                
+                int id = rs.getInt(1);
+                String numero = rs.getString(2);
+                
+                // Récupérer le groupe
+                int idGroupe = rs.getInt(3);
+                Groupe groupe = Groupe.charger_groupe_BDD(idGroupe);
+                
+                // Il faut maintenant récupérer les infos contenues dans la table utilisateur à partir de l'ID
+                Utilisateur utEtu = Utilisateur.charger_utilisateur_BDD(id);
+                
+                // Créer l'Etudiant
+                Etudiant etu = new Etudiant(id, utEtu.getEmail(), utEtu.getPasswd(), utEtu.getNom(), utEtu.getPrenom(), utEtu.getDroit(),numero,groupe);
+                
+                // L'ajouter dans la liste des étudiants
+                liste_enseignants.add(etu);
+            }
+
+            
+        }
+        catch(SQLException e) 
+        {
+            System.out.println(e.getMessage());
+        } 
+       
+       return liste_enseignants;
+    }
+    
 }

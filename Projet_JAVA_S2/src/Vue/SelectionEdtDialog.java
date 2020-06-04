@@ -33,13 +33,13 @@ public class SelectionEdtDialog extends JDialog implements ActionListener
     
     // Edt en fonction de la promo
     private JPanel P_promo ;
-    private String[] liste_promo = {"2021","2022"};
+    private String[] liste_promo ;
     private JComboBox  CB_choixPromo ;
     private JButton B_Promo;
     
     // Edt en fonction de l'etudiant
     private JPanel P_etudiant ;
-    private String[] liste_etudiant = {"Grace Gnenago","Nassim Boutaleb"};
+    private String[] liste_etudiant;
     private JComboBox  CB_choixEtudiant ;
     private JButton B_Etudiant;
     private JTextField T_etudiant;
@@ -68,7 +68,8 @@ public class SelectionEdtDialog extends JDialog implements ActionListener
         this.controleur = cont;
         
         // Initialiser les listes pour les listes
-        //this.liste_promo = liste_promo;
+        liste_promo = controleur.get_liste_promos();
+        liste_etudiant = controleur.get_liste_etudiants();
         
         
         // Créer le panel global

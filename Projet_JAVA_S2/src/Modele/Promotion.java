@@ -5,6 +5,7 @@
  */
 package Modele;
 import DAO.*;
+import java.util.ArrayList;
 
 /**
  *
@@ -63,6 +64,15 @@ public class Promotion
         Promotion ut = udao.find(id);
         
         return ut;
+    }
+    
+    // cette méthode rend une lsite avec ttes les promotions de la BDD
+    public static ArrayList<Promotion> getAllPromotions ()
+    {
+        ArrayList<Promotion> liste_promotions = new ArrayList<>(100);
+        PromotionDAO pdao = new PromotionDAO();
+        liste_promotions = pdao.getAllPromotions();
+        return liste_promotions;
     }
     
 }

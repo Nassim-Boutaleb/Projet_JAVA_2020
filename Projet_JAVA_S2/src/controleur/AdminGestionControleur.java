@@ -61,13 +61,46 @@ public class AdminGestionControleur
         sd = new SelectionEdtDialog(this,adminPage,"Sélectionner emploi du temps à afficher",true);
     }
     
-    // cette méthode est normalement appelée par le constructeur de SelectionEdtDialog
-    // elle renvoie la liste des promotions stockées en BDD
-    public ArrayList <Promotion> get_liste_promos ()
+
+    
+    // elle renvoie la liste des promotions stockées en BDD sous forme de tableau de String
+    /**
+     *
+     * @return
+     */
+    public String[] get_liste_promos ()
     {
         ArrayList <Promotion> liste_promo = new ArrayList<>(100);
-        PromotionDAO pdao = new PromotionDAO();
+        liste_promo = Promotion.getAllPromotions();
         
+        String [] noms_promos = new String [liste_promo.size()];  // stocker les noms de promo
+        for (int i = 0; i < liste_promo.size(); i++) 
+        {
+            noms_promos[i] = liste_promo.get(i).getNom();
+        }
+        
+        return noms_promos;
+        
+        
+    }
+    
+    // elle renvoie la liste des noms d'etudiants stockées en BDD sous forme de tableau de String
+    /**
+     *
+     * @return
+     */
+    public String[] get_liste_etudiants ()
+    {
+        ArrayList <Etudiant> liste_etudiants = new ArrayList<>(100);
+        liste_etudiants = Etudiant.getListeEtudiants();
+        
+        String [] noms_etudiants = new String [liste_etudiants.size()];  // stocker les noms des etudiants
+        for (int i = 0; i < liste_etudiants.size(); i++) 
+        {
+            noms_etudiants[i] = liste_etudiants.get(i).getNom()+" "+liste_etudiants.get(i).getPrenom();
+        }
+        
+        return noms_etudiants; 
     }
     
     // Une fois le choix de l'edt à afficher effectué au niveau de la vue SelectionEdtDialog

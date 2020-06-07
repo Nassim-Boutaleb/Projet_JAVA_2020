@@ -10,10 +10,12 @@ import Modele.Etudiant;
 import Modele.Groupe;
 import Modele.Seance;
 import Vue.EdtPage;
+import Vue.ModifierSeanceDialog;
 import Vue.edtProf;
 import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -23,8 +25,10 @@ public class EdtControleurProf {
     private edtProf edtProf ;  // stockage de la vue (page graphique)
     private int width;
     private int height;
+    private int droit;
+    private AdminGestionControleur agc; // controleur si un admin est co (sinon null)
     
-        public EdtControleurProf (Enseignant Prof)
+        public EdtControleurProf (Enseignant Prof , int droit, AdminGestionControleur agc)
     {
         // définir taille des fenetres
         //Récupérer taille utile de l'écran
@@ -41,6 +45,9 @@ public class EdtControleurProf {
         System.out.println(width);
         System.out.println(height);
         
+        this.droit = droit;
+        this.agc = agc;
+        
         ouvrirEdtProf(Prof);
 
     }
@@ -50,7 +57,7 @@ public class EdtControleurProf {
         
         //if(utilisateur.getDroit()==4){
         //Etudiant  etudiant =charger_etudiant_BDD( )://utilisateur.getId());
-        edtProf = new edtProf(width, height,this,Prof);
+        edtProf = new edtProf(width, height,this,Prof,droit);
 
         edtProf.setVisible(true);//}
     }
@@ -70,12 +77,23 @@ public class EdtControleurProf {
         return ut;
         
     }
+        
+        public void ouvrir_dialog_modifier_seance (Seance s)
+        {
+            ModifierSeanceDialog msd = new ModifierSeanceDialog(agc, edtProf, "Modifier la seance", true,s);
+        }
+        
+        public void supprimer_seance (Seance s)
+        {
+            int success = s.supprimer_seance();
+            
+            if (success == 0)
+            {
+                JOptionPane.showMessageDialog(edtProf,"Erreur SQL");
+            }
+        }
 }
 
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 

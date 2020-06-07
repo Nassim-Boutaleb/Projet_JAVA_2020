@@ -36,13 +36,15 @@ import javax.swing.event.ListSelectionListener;
  *
  * @author pezi
  */
-public class edtProf extends JFrame implements ActionListener, ListSelectionListener, ItemListener{
+public class edtProf extends JFrame implements ActionListener, ListSelectionListener, ItemListener
+{
     private GridLayout calendar;
     private JPanel panelGlobal;// panels
     private JPanel panelliste;
     private JPanel panelmenu;
     private JPanel panelrecherche;
     private JPanel panelsemaines;
+    private ArrayList<JPanel> liste_panels_jour = new ArrayList<>(500); // Liste des panels jours
     private JPanel panelmois;
     private JPanel paneltableau;
     private JPanel panelgrille;
@@ -52,22 +54,31 @@ public class edtProf extends JFrame implements ActionListener, ListSelectionList
     private JButton rechercher;
     private JTextField saisieRecherche;
     private JMenuBar menubar;
+    
     private EdtControleurProf edtc ;  // stocker le controleur
     private Utilisateur utilisateur;
     private Enseignant prof;
+    private int droit;
+    
     private int WINDOW_WIDTH = 1280;
     private int WINDOW_HEIGHT = 660;
     private JList<String> lisetSemaines;
     private JScrollPane scrollsemaine;
 
+    // Menu contextuel uniquement affiché sur clic droit par l'admin
+    
+    private ArrayList<JPopupMenu> liste_des_menus = new ArrayList<>(500);
+    private ArrayList<JMenuItem> liste_des_items_modifier = new ArrayList<>(500);
+    private ArrayList<JMenuItem> liste_des_items_supprimer = new ArrayList<>(500);
+    private ArrayList<Seance> seances = new ArrayList<>(500);
 
-public edtProf (int width , int height , EdtControleurProf edtC,Enseignant Prof)
+    public edtProf (int width , int height , EdtControleurProf edtC,Enseignant Prof, int droit)
     {
         panelGlobal = new JPanel();
         // stocker le controleur
         this.edtc = edtC;
         this.prof=Prof;
-
+        this.droit = droit;
 
 
         // créer les différents panels
@@ -77,8 +88,7 @@ public edtProf (int width , int height , EdtControleurProf edtC,Enseignant Prof)
         panelrecherche=new JPanel();
         panelsemaines=new JPanel();
         panelmois=new JPanel();
-        paneltableau=new JPanel();
-        panelgrille=new JPanel();
+ 
 
         // Titre de la fenetre
         setTitle ("Emploi du temps");
@@ -145,15 +155,12 @@ public edtProf (int width , int height , EdtControleurProf edtC,Enseignant Prof)
         // Nécéssaire pour l'image de fond
         //pack();
 
-
+        
 
 
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-
-    }
+   
 
     private void buildPanelmenu() {
 
@@ -174,6 +181,7 @@ public edtProf (int width , int height , EdtControleurProf edtC,Enseignant Prof)
         String[] choices1 = { "En grille","En liste"};
         String[] choices2 = { "Saisie du nom"};
         affichage = new JComboBox(choices1);
+        affichage.setSelectedIndex(1);
         affichage.addItemListener(this);
         
         recherche = new JComboBox(choices2);
@@ -235,7 +243,12 @@ public edtProf (int width , int height , EdtControleurProf edtC,Enseignant Prof)
 
     }
 
- private void buildPaneltableau(){
+ private void buildPaneltableau()
+ {
+
+     // Initialiser les panels
+    paneltableau=new JPanel();
+    panelgrille=new JPanel();
 
      // panel des heures (hope it will work !)
      //paneltableau.setLayout(new GridBagLayout());
@@ -359,136 +372,211 @@ public edtProf (int width , int height , EdtControleurProf edtC,Enseignant Prof)
 
             JPanel semaine=new JPanel();
             //ArrayList<Seance> seances= edtc.infosemaine();
-            ArrayList<Seance> seances= edtc.infosemaineprof(prof.getId(),num_semaine);
-
+            seances= edtc.infosemaineprof(prof.getId(),num_semaine);
+            liste_panels_jour = new ArrayList<>(500);
+            
+            
             Collections.sort(seances);
 
             semaine.setBorder(BorderFactory.createLineBorder(Color.red));
             semaine.setLayout(new BoxLayout(semaine,BoxLayout.Y_AXIS ));
             LocalDate dateseance = null;
-         System.out.println(""+seances.size());
-         int a=0;
+            System.out.println(""+seances.size());
+            int a=0;
+            
+            
+            
+            
 
-         for( int i=0 ;i<seances.size();i++)
-         {
+            for( int i=0 ;i<seances.size();i++)
+            {
 
-            Seance seance = seances.get(i);
+               // Si on est connecté en tant qu'admin : construire le menu contextuel
+   
+               Seance seance = seances.get(i);
+               JPanel jour = null;
+               if(seance.getEtat()!=1)
+               {
 
-            if(seance.getEtat()!=1){
+                    ArrayList <Groupe> liste_groupes =seance.getListeGroupes();
+                    ArrayList <Salle> liste_salles = seance.getListeSalles();
+                    ArrayList <Enseignant> liste_enseignants= seance.getListeEnseignants();
+                    TypeCours type = seance.getType();
+                    Cours Objetcours = seance.getCours();
 
-            ArrayList <Groupe> liste_groupes =seance.getListeGroupes();
-            ArrayList <Salle> liste_salles = seance.getListeSalles();
-            ArrayList <Enseignant> liste_enseignants= seance.getListeEnseignants();
-            TypeCours type = seance.getType();
-            Cours Objetcours = seance.getCours();
+                    jour=new JPanel();
+                    JPanel cours=new JPanel();
+                    JPanel date= new JPanel();
+                    JPanel carre= new JPanel();
+                    JPanel heure= new JPanel();
+                    JPanel titre= new JPanel();
+                    JPanel groupe= new JPanel();
+                    JPanel salle= new JPanel();
+                    JPanel format= new JPanel();
 
-            JPanel jour=new JPanel();
-            JPanel cours=new JPanel();
-            JPanel date= new JPanel();
-            JPanel carre= new JPanel();
-            JPanel heure= new JPanel();
-            JPanel titre= new JPanel();
-            JPanel groupe= new JPanel();
-            JPanel salle= new JPanel();
-            JPanel format= new JPanel();
+                    if(seance.getEtat()==3)
+                    {
+                        carre.add(new JLabel(" COURS ANNULE "));
+                        carre.setBackground(Color.orange);
+                    }
+                    heure.add(new JLabel(" "+seance.getHeured()+"-"+seance.getHeuref()+" "));
 
-            if(seance.getEtat()==3){
-            carre.add(new JLabel(" COURS ANNULE "));
-            carre.setBackground(Color.orange);
+                    jour.setBorder(BorderFactory.createLineBorder(Color.black));
+
+                    //cours.setPreferredSize(new Dimension(400,60));
+
+                    jour.setLayout(new GridBagLayout());
+                    jour.setPreferredSize(new Dimension(500,110));
+                    date.setPreferredSize(new Dimension(500,50));
+                    date.setBackground(Color.red);
+
+                    cours.setLayout(new GridBagLayout());
+                    GridBagConstraints e = new GridBagConstraints();
+                    GridBagConstraints o = new GridBagConstraints();
+
+                    e.fill =GridBagConstraints.HORIZONTAL;
+                    o.fill =GridBagConstraints.HORIZONTAL;
+
+                    e.gridx=0;
+                    e.gridy=5;
+                    cours.add(carre,e);
+
+                    e.gridx=5;
+                    cours.add(heure,e);
+
+                    e.gridx=10;
+                    titre.add(new JLabel(Objetcours.getNom()+"  "));
+                   cours.add(titre,e);
+
+                   for(int ugroupe=0;ugroupe<liste_groupes.size();ugroupe++)
+                   {
+
+                        e.gridx=15;
+                        JLabel nomgroupe= new JLabel(liste_groupes.get(ugroupe).getNom()+"  ");
+
+                        groupe.setLayout(new BoxLayout(groupe,BoxLayout.Y_AXIS ));
+                        groupe.add(nomgroupe);
+                        cours.add(groupe,e);
+
+                   }
+
+                   for(int usalles=0;usalles<liste_salles.size();usalles++)
+                   {
+
+                        e.gridx=20;
+                        JLabel nomsalle= new JLabel(liste_salles.get(usalles).getNom()+"  ");
+                        salle.setLayout(new BoxLayout(salle,BoxLayout.Y_AXIS ));
+                        salle.add(nomsalle);
+                        cours.add(salle,e);
+
+                   }
+
+                   e.gridx=25;
+
+                   JLabel nomtype= new JLabel(type.getNom()+" ");
+                   format.add(nomtype);
+                   cours.add(format,e);
+
+                   o.gridx=0;
+                   o.gridy=a;
+
+                   if(i==0)
+                   {
+                     dateseance = seance.getDate();
+                     date.add(new JLabel(" "+dateseance+" "));
+                     //jour.add(date,o);
+                     semaine.add(date);
+                   }
+                   else
+                   {
+                        if(seance.getDate().isEqual(dateseance)==false)
+                        {
+                           dateseance = seance.getDate();
+                           date.add(new JLabel(" "+dateseance+" "));
+                           //jour.add(date,o);
+                           semaine.add(date);
+                        }
+
+
+                   }   
+
+
+
+                   a=a+5;
+
+                   o.gridy=a;
+
+                  // date.add(new JLabel(" "+seance.getDate()+" "));
+                   jour.add(cours,o);
+                   semaine.add(jour);
+                   
+                   
+                   
+                   a=a+5;
+               }
+               liste_panels_jour.add(jour);
             }
-            heure.add(new JLabel(" "+seance.getHeured()+"-"+seance.getHeuref()+" "));
-
-            jour.setBorder(BorderFactory.createLineBorder(Color.black));
-
-            //cours.setPreferredSize(new Dimension(400,60));
-
-            jour.setLayout(new GridBagLayout());
-            jour.setPreferredSize(new Dimension(500,110));
-            date.setPreferredSize(new Dimension(500,50));
-            date.setBackground(Color.red);
-
-            cours.setLayout(new GridBagLayout());
-            GridBagConstraints e = new GridBagConstraints();
-            GridBagConstraints o = new GridBagConstraints();
-
-            e.fill =GridBagConstraints.HORIZONTAL;
-            o.fill =GridBagConstraints.HORIZONTAL;
-
-            e.gridx=0;
-            e.gridy=5;
-            cours.add(carre,e);
-
-            e.gridx=5;
-            cours.add(heure,e);
-
-            e.gridx=10;
-            titre.add(new JLabel(Objetcours.getNom()+"  "));
-           cours.add(titre,e);
-
-           for(int ugroupe=0;ugroupe<liste_groupes.size();ugroupe++){
-
-           e.gridx=15;
-           JLabel nomgroupe= new JLabel(liste_groupes.get(ugroupe).getNom()+"  ");
-
-           groupe.setLayout(new BoxLayout(groupe,BoxLayout.Y_AXIS ));
-           groupe.add(nomgroupe);
-           cours.add(groupe,e);
-
-           }
-
-           for(int usalles=0;usalles<liste_salles.size();usalles++){
-
-           e.gridx=20;
-           JLabel nomsalle= new JLabel(liste_salles.get(usalles).getNom()+"  ");
-           salle.setLayout(new BoxLayout(salle,BoxLayout.Y_AXIS ));
-           salle.add(nomsalle);
-           cours.add(salle,e);
-
-           }
-
-           e.gridx=25;
-
-           JLabel nomtype= new JLabel(type.getNom()+" ");
-           format.add(nomtype);
-           cours.add(format,e);
-
-           o.gridx=0;
-           o.gridy=a;
-
-           if(i==0)
-           {
-             dateseance = seance.getDate();
-             date.add(new JLabel(" "+dateseance+" "));
-             //jour.add(date,o);
-             semaine.add(date);
-           }
-           else
-           {
-            if(seance.getDate().isEqual(dateseance)==false){
-               dateseance = seance.getDate();
-               date.add(new JLabel(" "+dateseance+" "));
-               //jour.add(date,o);
-               semaine.add(date);
-            }
-
-
-           }   
-
-
-
-           a=a+5;
-
-           o.gridy=a;
-
-          // date.add(new JLabel(" "+seance.getDate()+" "));
-           jour.add(cours,o);
-           semaine.add(jour);
-           a=a+5;
-            }
-         }
 
         panelliste.add(semaine);
+         System.out.println("SS"+seances.size());
+         System.out.println("KK"+liste_panels_jour.size());
+         
+         // Créer autant de menus que de panels jour
+         if (this.droit == 1)
+        {
+                liste_des_menus= new ArrayList<>(500);
+                liste_des_items_modifier= new ArrayList<>(500);
+                liste_des_items_supprimer= new ArrayList<>(500);
+                for (int i = 0; i < liste_panels_jour.size(); i++) 
+                {
 
+                    JPopupMenu jModSupp = new JPopupMenu();
+                    JMenu JMA_modifier_seance = new JMenu("Modifier la seance");
+                    JMenu JMA_supp_seance = new JMenu("Supprimer la seance");
+                    JMenuItem JMIA_mod_seance = new JMenuItem("Modifier la seance");
+                    JMenuItem JMIA_supp_seance = new JMenuItem("Supprimer la seance");
+
+                    JMIA_mod_seance.addActionListener(this);
+                    JMIA_supp_seance.addActionListener(this);
+
+                    JMA_modifier_seance.add(JMIA_mod_seance);
+                    JMA_supp_seance.add(JMIA_supp_seance);
+                    jModSupp.add(JMA_modifier_seance);
+                    jModSupp.add(JMA_supp_seance);
+
+                    liste_des_menus.add(jModSupp);
+                    liste_des_items_modifier.add(JMIA_mod_seance);
+                    liste_des_items_supprimer.add(JMIA_supp_seance);
+                }
+        }
+
+         // Ajouter les listeners 
+         if (this.droit == 1)
+         {
+            for (int i = 0; i < liste_panels_jour.size(); i++) 
+            {
+                JPopupMenu jpm = liste_des_menus.get(i);
+                JPanel jourK = liste_panels_jour.get(i);
+                if (droit == 1)
+                {
+                   liste_panels_jour.get(i).addMouseListener(new MouseAdapter() 
+                   {
+                        public void mouseReleased(MouseEvent event)
+                        {
+                            if(event.getButton() == MouseEvent.BUTTON3)
+                            {
+                                if(event.isPopupTrigger())
+                                {   
+                                    //System.out.println("Affiche popo");
+                                    jpm.show(jourK, event.getX(), event.getY());
+                                }    
+                            }
+                        }
+                    });
+                }
+            } 
+         }
+         
 
 
 
@@ -558,4 +646,31 @@ public edtProf (int width , int height , EdtControleurProf edtC,Enseignant Prof)
             
         }
     }
+    
+     @Override
+    public void actionPerformed(ActionEvent e) 
+    {
+        System.out.println("IAM: "+liste_des_items_modifier.size());
+        for (int i = 0; i < liste_des_items_modifier.size(); i++) 
+        {
+            if (e.getSource() == liste_des_items_modifier.get(i))
+            {
+                JOptionPane.showMessageDialog(this, "Cliqué");
+                JOptionPane.showMessageDialog(this, "Seance: "+seances.get(i).getId());
+                Seance s = seances.get(i);
+                edtc.ouvrir_dialog_modifier_seance(s);
+            }
+            
+            else if (e.getSource() == liste_des_items_supprimer.get(i))
+            {
+                JOptionPane.showMessageDialog(this, "Cliqué supp");
+                Seance s = seances.get(i);
+                edtc.supprimer_seance(s);
+            }
+        }
+    }
+    
+   
+
+    
 }

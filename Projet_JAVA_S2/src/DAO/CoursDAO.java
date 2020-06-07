@@ -66,14 +66,18 @@ public class CoursDAO extends DAO <Cours>
                 Statement stmtC1=connect.createStatement(); 
 
                 // récupérer Cours en fonction de son nom
-                success =stmtC1.executeUpdate("INSERT INTO cours (nom) VALUES ('"+nom+"')");  
+                success =stmtC1.executeUpdate("INSERT INTO cours (nom) VALUES ('"+nom+"')");
+                
+                
 
             }
             catch(SQLException e) 
             {
                 System.out.println(e.getMessage());
             } 
+            
         }
+        
         
         return success;
         
@@ -123,6 +127,7 @@ public class CoursDAO extends DAO <Cours>
                 // récupérer Cours en fonction de son nom
                 success =stmtC1.executeUpdate("UPDATE cours SET Nom = '"+nouveauNom+"' WHERE Nom = '"+nom+"'");  
 
+                connect.close();
             }
             catch(SQLException e) 
             {
@@ -165,7 +170,7 @@ public class CoursDAO extends DAO <Cours>
                 // Créer Cours
                 co = new Cours(id,nom);
             }
-
+            
             
         }
         catch(SQLException e) 
@@ -205,6 +210,7 @@ public class CoursDAO extends DAO <Cours>
                 // Créer Cours
                 co = new Cours(id,nom);
             }
+            
 
             
         }
@@ -248,7 +254,7 @@ public class CoursDAO extends DAO <Cours>
                 liste_cours.add(cours);
             }
 
-            
+              
         }
         catch(SQLException e) 
         {

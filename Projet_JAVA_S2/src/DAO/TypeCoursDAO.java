@@ -71,6 +71,7 @@ public class TypeCoursDAO extends DAO<TypeCours>
                 // Créer TypeCoursDAO
                 ut = new TypeCours(id,nom);
             }
+            
 
             
         }
@@ -109,7 +110,7 @@ public class TypeCoursDAO extends DAO<TypeCours>
                 // Créer TypeCoursDAO
                 ut = new TypeCours(id,nom);
             }
-
+            
             
         }
         catch(SQLException e) 
@@ -151,7 +152,7 @@ public class TypeCoursDAO extends DAO<TypeCours>
                 // l'ajouter à la liste des groupes
                 liste_typeCours.add(tc);
             }
-
+            
             
         }
         catch(SQLException e) 

@@ -209,11 +209,24 @@ public class SelectionEdtDialog extends JDialog implements ActionListener, ItemL
     public void actionPerformed(ActionEvent e) 
     {
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        dispose();
         if (e.getSource() == B_Promo)
         {
-            JOptionPane.showMessageDialog(this, "BBJ");
+            JOptionPane.showMessageDialog(this, "Non réalisé !");
         }
-        if (e.getSource() == annuler)
+        else if (e.getSource() == B_Etudiant)
+        {
+            //controleur.afficher_edt_etudiant ();
+        }
+        else if (e.getSource() == B_Enseignant)
+        {
+            String nom_prenom = (String) CB_choixEnseignant.getSelectedItem();
+            String[] parties = nom_prenom.split(" ");
+            String nom = parties[0];
+            String prenom = parties[1];
+            controleur.afficher_edt_enseignant (nom,prenom);
+        }
+        else if (e.getSource() == annuler)
         {
             dispose();
         }

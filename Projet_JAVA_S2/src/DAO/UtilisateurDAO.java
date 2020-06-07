@@ -72,7 +72,7 @@ public class UtilisateurDAO extends DAO<Utilisateur>
                 // Créer l'utilisateur
                 ut = new Utilisateur(id, email, passwd, nom, prenom, droit);
             }
-
+            
             
         }
         catch(SQLException e) 
@@ -115,7 +115,7 @@ public class UtilisateurDAO extends DAO<Utilisateur>
                 // Créer l'utilisateur
                 ut = new Utilisateur(id, email, passwd, nom, prenom, droit);
             }
-
+            
             
         }
         catch(SQLException e) 
@@ -155,7 +155,7 @@ public class UtilisateurDAO extends DAO<Utilisateur>
                 // Créer l'utilisateur
                 ut = new Utilisateur(id, email, passwd, nom, prenom, droit);
             }
-
+            
             
         }
         catch(SQLException e) 

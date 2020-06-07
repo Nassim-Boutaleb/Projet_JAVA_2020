@@ -214,6 +214,7 @@ public class SeanceDAO extends DAO<Seance>
                     
                 }
             }
+            
         } 
         catch (SQLException e) 
         {
@@ -276,6 +277,7 @@ public class SeanceDAO extends DAO<Seance>
                         
                     }
                 }
+                
                
             } 
             catch (SQLException e) 
@@ -293,13 +295,279 @@ public class SeanceDAO extends DAO<Seance>
     @Override
     public int update(Seance seance) 
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+       // succès ?
+        int chevauche = 0;
+        int success = 0;
+
+        // récupérer les données de la séance qu'il faudra insérer
+        int id = seance.getId();
+        int semaine = seance.getSemaine();
+        LocalDate dateS = seance.getDate();
+        LocalTime heure_debutS = seance.getHeured();
+        LocalTime heure_finS = seance.getHeuref();
+        int etat = seance.getEtat();
+        Cours cours = seance.getCours();
+        TypeCours type = seance.getType();
+        ArrayList <Groupe> liste_groupes = seance.getListeGroupes();
+        ArrayList <Salle> liste_salles = seance.getListeSalles();
+        ArrayList <Enseignant> liste_enseignants = seance.getListeEnseignants();
+        
+        
+        try 
+        {
+            
+            // Vérifier que les groupes soient libres à l'horaire demandé
+            // récupérer les id des séances pour chaque groupe
+            for (int i = 0; i < liste_groupes.size(); i++) 
+            {
+                int idGroupe = liste_groupes.get(i).getId();
+                        
+                Statement stmtSe51=connect.createStatement(); 
+                ResultSet rsSe51=stmtSe51.executeQuery("SELECT * FROM seance_groupes WHERE IdGroupe = '"+idGroupe+"' AND IdSeance != '"+id+"'"); 
+
+                while (rsSe51.next())  // si rien n'est trouvé on ne rentre pas dans le while
+                { 
+                    // récupérer les données de chaque séance trouvée pour le groupe donné dont la date est la même
+                    int idSeance = rsSe51.getInt(1);
+
+                    Statement stmtSe52=connect.createStatement(); 
+                    ResultSet rsSe52=stmtSe52.executeQuery("SELECT * FROM seance WHERE ID = '"+idSeance+"' AND Date = '"+dateS+"'"); 
+
+
+                    while (rsSe52.next()) // Si une séance à la même date est trouvée
+                    {
+                        // récupérer les heures de chaque séances et les comparer avec celles de notre séance
+                        java.sql.Time heureDebutSQL = rsSe52.getTime(4);
+                        java.sql.Time heureFinSQL = rsSe52.getTime(5);
+                        LocalTime heureDebut = heureDebutSQL.toLocalTime();
+                        LocalTime heureFin = heureFinSQL.toLocalTime();
+                        
+                        // les comparer : si chevauchement incrémenter chevauche et quitter tout de suite le programme
+                        if (heure_debutS.isAfter(heureDebut) && heure_debutS.isBefore(heureFin) )
+                        {
+                            chevauche++;
+                            return 99;
+                        }
+                        else if (heure_finS.isAfter(heureDebut) && heure_finS.isBefore(heureFin) )
+                        {
+                            chevauche++;
+                            return 99;
+                        }
+                        else if (heure_debutS.equals(heureDebut) && heure_finS.equals(heureFin) )
+                        {
+                            chevauche++;
+                            return 99;
+                        }
+                        else if (heure_debutS.isBefore(heureDebut) && heure_finS.isAfter(heureFin) )
+                        {
+                            chevauche++;
+                            return 99;
+                        }
+                        
+                    }
+                    
+                }
+            }
+            
+            
+            // Vérifier que les profs soient libres à l'horaire demandé
+            // récupérer les id des séances pour chaque profs
+            for (int i = 0; i < liste_enseignants.size(); i++) 
+            {
+                int idEns = liste_enseignants.get(i).getId();
+                        
+                Statement stmtSe51=connect.createStatement(); 
+                ResultSet rsSe51=stmtSe51.executeQuery("SELECT * FROM seance_enseignant WHERE IdEnseignant = '"+idEns+"' AND IdSeance != '"+id+"'"); 
+
+                while (rsSe51.next())  // si rien n'est trouvé on ne rentre pas dans le while
+                { 
+                    // récupérer les données de chaque séance trouvée pour le groupe donné dont la date est la même
+                    int idSeance = rsSe51.getInt(1);
+
+                    Statement stmtSe52=connect.createStatement(); 
+                    ResultSet rsSe52=stmtSe52.executeQuery("SELECT * FROM seance WHERE ID = '"+idSeance+"' AND Date = '"+dateS+"'"); 
+
+
+                    while (rsSe52.next()) // Si une séance à la même date est trouvée
+                    {
+                        // récupérer les heures de chaque séances et les comparer avec celles de notre séance
+                        java.sql.Time heureDebutSQL = rsSe52.getTime(4);
+                        java.sql.Time heureFinSQL = rsSe52.getTime(5);
+                        LocalTime heureDebut = heureDebutSQL.toLocalTime();
+                        LocalTime heureFin = heureFinSQL.toLocalTime();
+                        
+                        // les comparer : si chevauchement incrémenter chevauche et quitter tout de suite le programme
+                        if (heure_debutS.isAfter(heureDebut) && heure_debutS.isBefore(heureFin) )
+                        {
+                            chevauche++;
+                            return 100;
+                        }
+                        else if (heure_finS.isAfter(heureDebut) && heure_finS.isBefore(heureFin) )
+                        {
+                            chevauche++;
+                            return 100;
+                        }
+                        else if (heure_debutS.equals(heureDebut) && heure_finS.equals(heureFin) )
+                        {
+                            chevauche++;
+                            return 100;
+                        }
+                        else if (heure_debutS.isBefore(heureDebut) && heure_finS.isAfter(heureFin) )
+                        {
+                            chevauche++;
+                            return 99;
+                        }
+                        
+                    }
+                    
+                }
+            }
+            
+            // Vérifier que les salles soient libres à l'horaire demandé
+            // récupérer les id des séances pour chaque salle
+            for (int i = 0; i < liste_salles.size(); i++) 
+            {
+                int idsalle = liste_salles.get(i).getId();
+                        
+                Statement stmtSe51=connect.createStatement(); 
+                ResultSet rsSe51=stmtSe51.executeQuery("SELECT * FROM seance_salle WHERE IdSalle = '"+idsalle+"' AND IdSeance != '"+id+"'"); 
+
+                while (rsSe51.next())  // si rien n'est trouvé on ne rentre pas dans le while
+                { 
+                    // récupérer les données de chaque séance trouvée pour le groupe donné dont la date est la même
+                    int idSeance = rsSe51.getInt(1);
+
+                    Statement stmtSe52=connect.createStatement(); 
+                    ResultSet rsSe52=stmtSe52.executeQuery("SELECT * FROM seance WHERE ID = '"+idSeance+"' AND Date = '"+dateS+"'"); 
+
+
+                    while (rsSe52.next()) // Si une séance à la même date est trouvée
+                    {
+                        // récupérer les heures de chaque séances et les comparer avec celles de notre séance
+                        java.sql.Time heureDebutSQL = rsSe52.getTime(4);
+                        java.sql.Time heureFinSQL = rsSe52.getTime(5);
+                        LocalTime heureDebut = heureDebutSQL.toLocalTime();
+                        LocalTime heureFin = heureFinSQL.toLocalTime();
+                        
+                        // les comparer : si chevauchement incrémenter chevauche et quitter tout de suite le programme
+                        if (heure_debutS.isAfter(heureDebut) && heure_debutS.isBefore(heureFin) )
+                        {
+                            chevauche++;
+                            return 101;
+                        }
+                        else if (heure_finS.isAfter(heureDebut) && heure_finS.isBefore(heureFin) )
+                        {
+                            chevauche++;
+                            return 101;
+                        }
+                        else if (heure_debutS.equals(heureDebut) && heure_finS.equals(heureFin) )
+                        {
+                            chevauche++;
+                            return 101;
+                        }
+                        else if (heure_debutS.isBefore(heureDebut) && heure_finS.isAfter(heureFin) )
+                        {
+                            chevauche++;
+                            return 101;
+                        }
+                        
+                    }
+                    
+                }
+            }
+            
+        } 
+        catch (SQLException e) 
+        {
+            System.out.println(e.getMessage());
+        }
+        
+        // Si aucun chevauchement détecté : on peut supprimer puis ajouter la séance dans les différentes tables
+        if (chevauche == 0)
+        {
+            try 
+            {
+                // On supprime la séance de séance (par le mécanisme des clés étrangères elle sera supprimée aussi des autres tables)
+                Statement stmtSe99=connect.createStatement(); 
+                success =stmtSe99.executeUpdate("DELETE FROM seance WHERE ID='"+id+"'");  
+
+                
+                // On recrée dans toutes les tables
+                Statement stmtSe53=connect.createStatement(); 
+
+                // Insérer la séance dans seance
+                java.sql.Date dateSQLNewSeance = java.sql.Date.valueOf(dateS);
+                java.sql.Time heureDebutSQLSeance = java.sql.Time.valueOf(heure_debutS);
+                java.sql.Time heureFinSQLSeance = java.sql.Time.valueOf(heure_finS);
+                success =stmtSe53.executeUpdate("INSERT INTO seance (ID,Semaine,Date,heure_debut,Heure_fin,Etat,IdCours,IdType) VALUES ('"+id+"','"+semaine+"','"+dateSQLNewSeance+"','"+heureDebutSQLSeance+"','"+heureFinSQLSeance+"','"+etat+"','"+cours.getId()+"','"+type.getId()+"')");  
+
+                if (success != 0) // si opération réussie
+                {
+ 
+                    // insérer dans seance_enseignant
+                    for (int i = 0; i < liste_enseignants.size(); i++) 
+                    {
+                        Statement stmtSe65=connect.createStatement(); 
+                        success =stmtSe65.executeUpdate("INSERT INTO seance_enseignant (IdSeance,IdEnseignant) VALUES ('"+id+"','"+liste_enseignants.get(i).getId()+"')");  
+                    } 
+                    
+                    if (success !=0)
+                    {
+                        // Insérer dans seance_groupe
+                        for (int i = 0; i < liste_groupes.size(); i++) 
+                        {
+                            Statement stmtSe66=connect.createStatement(); 
+                            success =stmtSe66.executeUpdate("INSERT INTO seance_groupes (IdSeance,IdGroupe) VALUES ('"+id+"','"+liste_groupes.get(i).getId()+"')");
+                        }
+                        
+                        if (success != 0)
+                        {
+                            // Insérer dans seance_salle
+                            for (int i = 0; i < liste_salles.size(); i++) 
+                            {
+                                Statement stmtSe67=connect.createStatement(); 
+                                success =stmtSe67.executeUpdate("INSERT INTO seance_salle (IdSeance,IdSalle) VALUES ('"+id+"','"+liste_salles.get(i).getId()+"')");
+                            }
+                        }
+                        
+                    }
+                }
+                
+               
+            } 
+            catch (SQLException e) 
+            {
+                System.out.println(e.getMessage());
+            } 
+        }
+        
+        
+        return success;
+
     }
 
+    /**
+     * Cette méthode supprime une sénace de la BDD
+     * @param seance = la séance à supprimer
+     * @return success = succès de la requete
+     */
     @Override
     public int delete(Seance seance) 
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        int id = seance.getId();
+        int success = 0;
+        try 
+        {
+                // On supprime la séance de séance (par le mécanisme des clés étrangères elle sera supprimée aussi des autres tables)
+                Statement stmtSe86=connect.createStatement(); 
+                success =stmtSe86.executeUpdate("DELETE FROM seance WHERE ID='"+id+"'");  
+
+        } 
+        catch (Exception e) 
+        {
+            
+        }
+        return success;
     }
 
      /**
@@ -399,6 +667,7 @@ public class SeanceDAO extends DAO<Seance>
                 // Créer Seance
                 ut = new Seance(id, semaine, date, heured, heuref, etat,cours,type,liste_groupes,liste_salles,liste_enseignants);
             }
+            
 
             
         }
@@ -508,6 +777,7 @@ public class SeanceDAO extends DAO<Seance>
                 }
                 
             }
+            
             
             
         }
@@ -636,6 +906,7 @@ public class SeanceDAO extends DAO<Seance>
             
             
             
+            
         }
         catch(SQLException e) 
         {
@@ -755,6 +1026,7 @@ public class SeanceDAO extends DAO<Seance>
                 
             
             }
+            
             
             
             

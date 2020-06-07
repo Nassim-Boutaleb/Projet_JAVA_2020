@@ -96,7 +96,7 @@ public class LoginPageControleur {
                     logPage.dispose();
                     
                     // Créer nouveau controleur EdtControleur
-                    new EdtControleurProf(prof);
+                    new EdtControleurProf(prof,3,null);
                     
                 }else if(ut.getDroit()==2){
                     AdminGestionControleur agc = new AdminGestionControleur();

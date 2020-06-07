@@ -76,8 +76,7 @@ public EdtPage (int width , int height , EdtControleur edtC,Etudiant etudiant)
         panelrecherche=new JPanel();
         panelsemaines=new JPanel();
         panelmois=new JPanel();
-        paneltableau=new JPanel();
-        panelgrille=new JPanel();
+
 
         // Titre de la fenetre
         setTitle ("Emploi du temps");
@@ -96,7 +95,7 @@ public EdtPage (int width , int height , EdtControleur edtC,Etudiant etudiant)
         buildPanelmenu();
         buildPanelrecherche();
         buildPanelsemaines();
-        buildPaneltableau();
+        buildPaneltableau(23);
         buildpanelliste(23);
         //definir les tailles des panels
 
@@ -169,6 +168,7 @@ public EdtPage (int width , int height , EdtControleur edtC,Etudiant etudiant)
         String[] choices1 = { "En grille","En liste"};
         String[] choices2 = { "Saisie du nom"};
         affichage = new JComboBox(choices1);
+        affichage.setSelectedIndex(1);
         affichage.addItemListener(this);
         
         recherche = new JComboBox(choices2);
@@ -230,7 +230,12 @@ public EdtPage (int width , int height , EdtControleur edtC,Etudiant etudiant)
 
     }
 
- private void buildPaneltableau(){
+ private void buildPaneltableau(int num_semaine){
+
+     // initialiser les panels
+    paneltableau=new JPanel();
+    panelgrille=new JPanel();
+
 
      // panel des heures (hope it will work !)
      //paneltableau.setLayout(new GridBagLayout());
@@ -281,10 +286,15 @@ public EdtPage (int width , int height , EdtControleur edtC,Etudiant etudiant)
         //Container container = panelgrille.getContentPane();
 
         ArrayList < JPanel > components = new ArrayList < JPanel >();
+        ArrayList<Seance> seances = edtc.infosemainegroupe(etudiant.getGroupe(),num_semaine);
+        Collections.sort(seances);
+        int cpt = 0;
+        
+        
+        
         JPanel temp = null;
         String[] jours = { "Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi"};
-        // Populating Arraylist object.
-        //c.gridwidth = 1;
+
         for(int i =0;i<6;i++)
         {
           temp = new JPanel();
@@ -294,29 +304,97 @@ public EdtPage (int width , int height , EdtControleur edtC,Etudiant etudiant)
           c.gridx = 0;
           panelgrille.add(temp,c);
           int z =1;
-          while(z<8)
+          while(z<8) // placer en ligne
           {
             c.gridx = z;
-            temp= new JPanel();
-            javax.swing.border.Border line =  BorderFactory.createLineBorder(Color.white);
-            JPanel panel = new JPanel();
-            LayoutManager layout = new FlowLayout();
-            panel.setLayout(layout);       
-            String spaces = "                   ";
+            
+            temp= new JPanel();  // cours ?
+            
+            
+            if (cpt < seances.size() )
+            {
+                Seance s = seances.get(cpt);
+                if (seances.get(cpt).getChiffreDate() == i)
+                {
+                    // il y a un cours ce jour
+                    System.out.println("Heure recue: "+seances.get(cpt).getChiffreHeure()+" z: "+z);
+                    if (seances.get(cpt).getChiffreHeure() == z)
+                    {
+                        // Il y a un cours à cet horaire
+                        JPanel cours = new JPanel();  // new SeanceCarre()
+                        cours.add(new JLabel(seances.get(cpt).getCours().getNom()));
+                        javax.swing.border.Border line =  BorderFactory.createLineBorder(Color.white);
+                        cours.setPreferredSize(new Dimension(160, 60));
+                        cours.setBackground(Color.blue);
+                        cours.setBorder(line);
+                        components.add(cours);
 
-            temp.add(new JLabel(""+(components.size()+1)));
+                        //container.add(temp);
+                        panelgrille.add(cours,c);
+                        cpt ++;
+                        
+                    }
+                    else
+                    {
+                        javax.swing.border.Border line =  BorderFactory.createLineBorder(Color.white);
+                        temp.setPreferredSize(new Dimension(160, 60));
+                        temp.setBackground(Color.lightGray);
+                        temp.setBorder(line);
+                        components.add(temp);
 
-            temp.setPreferredSize(new Dimension(160, 60));
-            temp.setBackground(Color.lightGray);
-            temp.setBorder(line);
-            components.add(temp);
+                        //container.add(temp);
+                        panelgrille.add(temp,c);
+                    }
+                }
+                else 
+                {
+                    javax.swing.border.Border line =  BorderFactory.createLineBorder(Color.white);
+                    temp.setPreferredSize(new Dimension(160, 60));
+                    temp.setBackground(Color.lightGray);
+                    temp.setBorder(line);
+                    components.add(temp);
 
-            //container.add(temp);
-            panelgrille.add(temp,c);
+                    //container.add(temp);
+                    panelgrille.add(temp,c);
+                }
+            }
+            else
+            {
+                javax.swing.border.Border line =  BorderFactory.createLineBorder(Color.white);
+                temp.setPreferredSize(new Dimension(160, 60));
+                temp.setBackground(Color.lightGray);
+                temp.setBorder(line);
+                components.add(temp);
+
+                //container.add(temp);
+                panelgrille.add(temp,c);
+            }
+            
+            
             z++;
           }
         }
-        JPanel p = new JPanel();
+        
+        /*for (int i = 0; i < seances.size(); i++) 
+        {
+            JPanel p = new JPanel();  // (seances.get(i))
+            p.setBackground(Color.blue);
+            
+            if (seances.get(i).getDate() == "Lundi" )
+            {
+                 if (seances.get(i).getHeured().equals("08:30:00"))
+                 {
+                     JPanel m = components.get(0);
+                    c.gridx =0;
+                    c.gridy=0;
+                    panelgrille.add(p,c);
+                 }
+                
+            }
+            
+        }*/
+        
+        /*JPanel p = new JPanel();
         JPanel m = components.get(5);
         panelgrille.remove(m);
         p.add(new JLabel("5"));
@@ -327,7 +405,7 @@ public EdtPage (int width , int height , EdtControleur edtC,Etudiant etudiant)
         c.gridx =6;
         c.gridy=0;
         //c.gridwidth = 1;
-        panelgrille.add(p,c);
+        panelgrille.add(p,c); */
 
         /*for(Component e : panelgrille.getComponents()){
             if(e instanceof JPanel){
@@ -354,7 +432,7 @@ public EdtPage (int width , int height , EdtControleur edtC,Etudiant etudiant)
 
             JPanel semaine=new JPanel();
             //ArrayList<Seance> seances= edtc.infosemaine();
-            ArrayList<Seance> seances= edtc.infosemainegroupe(etudiant.getGroupe(),num_semaine);
+            ArrayList<Seance> seances = edtc.infosemainegroupe(etudiant.getGroupe(),num_semaine);
 
             Collections.sort(seances);
 
@@ -507,10 +585,10 @@ public EdtPage (int width , int height , EdtControleur edtC,Etudiant etudiant)
             String type_affichage = (String) affichage.getSelectedItem();
             if (type_affichage.equals("En grille"))
             {
-                panelGlobal.remove(paneltableau);
+                //panelGlobal.remove(paneltableau);
                 paneltableau.removeAll();
-                panelGlobal.remove(scrollsemaine);
-                buildPaneltableau();
+                //panelGlobal.remove(scrollsemaine);
+                buildPaneltableau(23);
                 panelGlobal.add(paneltableau);
                 SwingUtilities.updateComponentTreeUI(this);
             }
@@ -518,7 +596,7 @@ public EdtPage (int width , int height , EdtControleur edtC,Etudiant etudiant)
             {
                 // code pour afficher en liste
             
-            panelGlobal.remove(scrollsemaine);
+            //panelGlobal.remove(scrollsemaine);
             panelliste.removeAll();
             panelGlobal.remove(paneltableau);
             int numero_semaine_choie = 23;
@@ -551,7 +629,9 @@ public EdtPage (int width , int height , EdtControleur edtC,Etudiant etudiant)
             
             
             // Code dont on a parlé
-            panelGlobal.remove(scrollsemaine);
+            // En fonction de si on est en grille ou en liste
+            
+            /*panelGlobal.remove(scrollsemaine);
             panelliste.removeAll();
             
             int numero_semaine_choie = Integer.parseInt(numero_semaine);
@@ -561,7 +641,33 @@ public EdtPage (int width , int height , EdtControleur edtC,Etudiant etudiant)
             
             scrollsemaine = new JScrollPane(panelliste);
             panelGlobal.add (scrollsemaine);
-            SwingUtilities.updateComponentTreeUI(this);
+            SwingUtilities.updateComponentTreeUI(this); */
+            
+            String type_affichage = (String) affichage.getSelectedItem();
+            if (type_affichage.equals("En grille"))
+            {
+                panelGlobal.remove(paneltableau);
+                paneltableau.removeAll();
+                panelGlobal.remove(scrollsemaine);
+                buildPaneltableau(23);
+                panelGlobal.add(paneltableau);
+                SwingUtilities.updateComponentTreeUI(this);
+            } 
+            else if (type_affichage.equals("En liste"))
+            {
+                // code pour afficher en liste
+                System.out.println("ici");
+                panelGlobal.remove(scrollsemaine);
+                panelliste.removeAll();
+                //panelGlobal.remove(paneltableau);
+
+                int numero_semaine_choie = Integer.parseInt(numero_semaine);
+                buildpanelliste(numero_semaine_choie);
+
+                scrollsemaine = new JScrollPane(panelliste);
+                panelGlobal.add (scrollsemaine);
+                SwingUtilities.updateComponentTreeUI(this);
+            }
             
         }
     }

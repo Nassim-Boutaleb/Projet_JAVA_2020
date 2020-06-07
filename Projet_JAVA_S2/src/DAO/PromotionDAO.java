@@ -81,7 +81,7 @@ public class PromotionDAO extends DAO<Promotion>
                 // Créer Promotion
                 promo = new Promotion(id,nom,liste_groupes);
             }
-
+            
             
         }
         catch(SQLException e) 
@@ -133,7 +133,7 @@ public class PromotionDAO extends DAO<Promotion>
                 // Créer Promotion
                 promo = new Promotion(id,nom,liste_groupes);
             }
-
+            
             
         }
         catch(SQLException e) 
@@ -193,7 +193,7 @@ public class PromotionDAO extends DAO<Promotion>
                 liste_promos.add(promo);
                 
             }
-
+            
             
         }
         catch(SQLException e) 

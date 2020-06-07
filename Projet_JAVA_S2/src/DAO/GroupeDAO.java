@@ -70,7 +70,7 @@ public class GroupeDAO extends DAO<Groupe>
                 // Créer Groupe
                 ut = new Groupe(id,nom,id_promotion);
             }
-
+            
             
         }
         catch(SQLException e) 
@@ -111,7 +111,7 @@ public class GroupeDAO extends DAO<Groupe>
                 // Créer Groupe
                 ut = new Groupe(id,nom,id_promotion);
             }
-
+            
             
         }
         catch(SQLException e) 
@@ -155,7 +155,7 @@ public class GroupeDAO extends DAO<Groupe>
                 // l'ajouter à la liste des groupes
                 liste_groupes.add(groupe);
             }
-
+            
             
         }
         catch(SQLException e) 

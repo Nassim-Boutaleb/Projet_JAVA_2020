@@ -362,4 +362,45 @@ public class AdminGestionControleur
             JOptionPane.showMessageDialog(adminPage,"Une des salles a deja un cours prevu a cet horaire");
         }
     }
+    
+    /**
+     * Cette méthode modifie une séance en base de données
+     * @param ls
+     */
+    public void modifier_seance(ArrayList<Seance> ls)
+    {
+        // Ajouter les séances une par une
+        int success = 0;
+        for (int i = 0; i < ls.size(); i++) // size = 1
+        {
+            success = ls.get(i).modifier_seance();
+        }
+        if (success == 0)
+        {
+            JOptionPane.showMessageDialog(adminPage,"Erreur SQL");
+        }
+        else if (success == 99)
+        {
+            JOptionPane.showMessageDialog(adminPage,"Un des groupes a deja un cours prevu a cet horaire");
+        }
+        else if (success == 100)
+        {
+            JOptionPane.showMessageDialog(adminPage,"Un des enseignants a deja un cours prevu a cet horaire");
+        }
+        else if (success == 101)
+        {
+            JOptionPane.showMessageDialog(adminPage,"Une des salles a deja un cours prevu a cet horaire");
+        }
+    }
+    
+    /**
+     * Cette méthode ouvre une fenetre graphique pour l'affichage de l'EDT de l'enseignant choisi
+     * @param nom
+     * @param prenom
+     */
+    public void afficher_edt_enseignant (String nom, String prenom)
+    {
+        Enseignant prof = Enseignant.charger_enseignant_BDD_nom_prenom(nom, prenom);
+        EdtControleurProf contProf = new EdtControleurProf(prof,1,this);
+    }
 }

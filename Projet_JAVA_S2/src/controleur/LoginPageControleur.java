@@ -86,7 +86,7 @@ public class LoginPageControleur {
                     logPage.dispose();
                     
                     // Créer nouveau controleur EdtControleur
-                    new EdtControleur(etudiant);
+                    new EdtControleur(etudiant,1,null);
                     
                 } 
                 else if(ut.getDroit()== 3){
@@ -99,11 +99,11 @@ public class LoginPageControleur {
                     new EdtControleurProf(prof,3,null);
                     
                 }else if(ut.getDroit()==2){
-                    AdminGestionControleur agc = new AdminGestionControleur();
-                    agc.ouvrirAdminpage(); 
+                   AdminGestionControleur agc = new AdminGestionControleur(2);
+                    agc.ouvrirRespopage(); 
                 }
                 else if(ut.getDroit()==1){
-                    AdminGestionControleur agc = new AdminGestionControleur();
+                    AdminGestionControleur agc = new AdminGestionControleur(1);
                     agc.ouvrirAdminpage(); 
                 }
             }

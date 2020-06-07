@@ -18,9 +18,11 @@ import java.util.ArrayList;
  *
  * @author Nassim
  */
-public class AdminGestionControleur 
+public class AdminGestionControleur
 {
     private AdminGestionMainPage adminPage ;  // stockage de la vue (page graphique)
+    private ResponsablePedagogiqueMainPage respPage;
+    private int droit;
     
     // Les boites de dialogue
     private SelectionEdtDialog sd;  // la boite de dialogue de séléction d'edt
@@ -31,7 +33,7 @@ public class AdminGestionControleur
     private int width;
     private int height;
     
-    public AdminGestionControleur ()
+    public AdminGestionControleur (int droit)
     {
         // définir taille des fenetres
         //Récupérer taille utile de l'écran
@@ -43,6 +45,10 @@ public class AdminGestionControleur
         // récupérer la largeur et la heuteur
         width = (int)maximumWindowBounds.getWidth();
         height = (int)maximumWindowBounds.getHeight();
+        
+        this.droit = droit;
+        
+        
     }
     
 
@@ -55,6 +61,16 @@ public class AdminGestionControleur
     {
         adminPage = new AdminGestionMainPage(height,width,this);
         adminPage.setVisible (true);
+    }
+    
+      /**
+     *    Cette méthode ouvre une fenetre AdminGestionMainpage et la rend visible
+     *    page principale de gestion de l'admin
+     */
+    public void ouvrirRespopage ()
+    {
+        respPage = new ResponsablePedagogiqueMainPage(height,width,this);
+        respPage.setVisible (true);
     }
     
 
@@ -401,6 +417,13 @@ public class AdminGestionControleur
     public void afficher_edt_enseignant (String nom, String prenom)
     {
         Enseignant prof = Enseignant.charger_enseignant_BDD_nom_prenom(nom, prenom);
-        EdtControleurProf contProf = new EdtControleurProf(prof,1,this);
+        EdtControleurProf contProf = new EdtControleurProf(prof,droit,this);
+    }
+    
+    public void afficher_edt_etudiant (String nom, String prenom)
+    {
+        Etudiant prof = Etudiant.charger_etu_BDD_nom_prenom(nom, prenom);
+        System.out.println("EDUEDU: "+prof.getNom()+" "+prof.getId());
+        EdtControleur contProf = new EdtControleur(prof,droit,this);
     }
 }

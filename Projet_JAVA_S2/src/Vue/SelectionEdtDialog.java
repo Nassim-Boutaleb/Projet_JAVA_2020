@@ -216,7 +216,11 @@ public class SelectionEdtDialog extends JDialog implements ActionListener, ItemL
         }
         else if (e.getSource() == B_Etudiant)
         {
-            //controleur.afficher_edt_etudiant ();
+            String nom_prenom = (String) CB_choixEtudiant.getSelectedItem();
+            String[] parties = nom_prenom.split(" ");
+            String nom = parties[0];
+            String prenom = parties[1];
+            controleur.afficher_edt_etudiant (nom,prenom);
         }
         else if (e.getSource() == B_Enseignant)
         {

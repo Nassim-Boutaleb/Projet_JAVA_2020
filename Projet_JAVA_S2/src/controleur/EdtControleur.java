@@ -22,9 +22,11 @@ public class EdtControleur {
     private EdtPage EdtPage ;  // stockage de la vue (page graphique)
     private int width;
     private int height;
+    private int droit;
+    private AdminGestionControleur agc;
 
 
-    public EdtControleur (Etudiant etudiant)
+    public EdtControleur (Etudiant etudiant, int droit, AdminGestionControleur agc)
     {
         // définir taille des fenetres
         //Récupérer taille utile de l'écran
@@ -41,6 +43,9 @@ public class EdtControleur {
         System.out.println(width);
         System.out.println(height);
         
+        this.droit = droit;
+        this.agc=agc;
+        
         ouvrirEdt(etudiant);
 
     }
@@ -53,7 +58,7 @@ public class EdtControleur {
         
         //if(utilisateur.getDroit()==4){
         //Etudiant  etudiant =charger_etudiant_BDD( )://utilisateur.getId());
-        EdtPage = new EdtPage(width, height,this,etudiant);
+        EdtPage = new EdtPage(width, height,this,etudiant,droit);
 
         EdtPage.setVisible(true);//}
     }
@@ -74,11 +79,20 @@ public class EdtControleur {
         
     }
     
-    /*public int getEtudiant(String email){
-        Utilisateur ut = Utilisateur.charger_utilisateur_BDD(email);
-       Etudiant etudiantut.getId();
-        return  ut.getDroit();
-    }*/
+    public void ouvrir_dialog_modifier_seance (Seance s)
+        {
+            ModifierSeanceDialog msd = new ModifierSeanceDialog(agc,EdtPage, "Modifier la seance", true,s);
+        }
+        
+        public void supprimer_seance (Seance s)
+        {
+            int success = s.supprimer_seance();
+            
+            if (success == 0)
+            {
+                JOptionPane.showMessageDialog(EdtPage,"Erreur SQL");
+            }
+        }
 
 
 

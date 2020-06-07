@@ -25,6 +25,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.Random;
+//import static javafx.scene.paint.Color.color;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.event.ListSelectionEvent;
@@ -58,16 +60,25 @@ public class EdtPage extends JFrame implements ActionListener, ListSelectionList
     private int WINDOW_HEIGHT = 660;
     private JList<String> lisetSemaines;
     private JScrollPane scrollsemaine;
+    private ArrayList<JPanel> liste_panels_jour = new ArrayList<>(500); // Liste des panels jours
+    
+    // Menu contextuel uniquement affiché sur clic droit par l'admin
+    
+    private ArrayList<JPopupMenu> liste_des_menus = new ArrayList<>(500);
+    private ArrayList<JMenuItem> liste_des_items_modifier = new ArrayList<>(500);
+    private ArrayList<JMenuItem> liste_des_items_supprimer = new ArrayList<>(500);
+    private ArrayList<Seance> seances = new ArrayList<>(500);
+    private int droit;
 
 
-public EdtPage (int width , int height , EdtControleur edtC,Etudiant etudiant)
+public EdtPage (int width , int height , EdtControleur edtC,Etudiant etudiant, int droit)
     {
         panelGlobal = new JPanel();
         // stocker le controleur
         this.edtc = edtC;
         this.etudiant=etudiant;
 
-
+        this.droit = droit;
 
         // créer les différents panels
         panelliste = new JPanel();
@@ -93,7 +104,7 @@ public EdtPage (int width , int height , EdtControleur edtC,Etudiant etudiant)
 
         // construire le panel global
         buildPanelmenu();
-        buildPanelrecherche();
+       // buildPanelrecherche();
         buildPanelsemaines();
         buildPaneltableau(23);
         buildpanelliste(23);
@@ -113,7 +124,7 @@ public EdtPage (int width , int height , EdtControleur edtC,Etudiant etudiant)
         c.gridheight=20;
         c.gridx =0;
         c.gridy=50; */
-        panelGlobal.add(panelrecherche);
+        //panelGlobal.add(panelrecherche);
         /*c.gridwidth = 100;
         c.gridheight=20;
         c.gridx =0;
@@ -144,13 +155,15 @@ public EdtPage (int width , int height , EdtControleur edtC,Etudiant etudiant)
 
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
+    
 
-    }
-
-    private void buildPanelmenu() {
-
+    private void buildPanelmenu() 
+    {
+        String[] choices1 = { "En grille","En liste"};
+        
+        affichage = new JComboBox(choices1);
+        affichage.setSelectedIndex(0);
+        affichage.addItemListener(this);
         menubar = new JMenuBar();
         JMenu edt = new JMenu("Emploi du temps ");
         JMenu cours = new JMenu("Récapitulatif des cours");
@@ -159,17 +172,17 @@ public EdtPage (int width , int height , EdtControleur edtC,Etudiant etudiant)
         cours.add(size);
         menubar.add(edt);
         menubar.add(cours);
+        
         panelmenu.add(menubar);
+        panelmenu.add(affichage);
 
     }
     private void buildPanelrecherche(){
 
 
-        String[] choices1 = { "En grille","En liste"};
+        
         String[] choices2 = { "Saisie du nom"};
-        affichage = new JComboBox(choices1);
-        affichage.setSelectedIndex(1);
-        affichage.addItemListener(this);
+
         
         recherche = new JComboBox(choices2);
         rechercher = new JButton("Recherche");
@@ -230,7 +243,8 @@ public EdtPage (int width , int height , EdtControleur edtC,Etudiant etudiant)
 
     }
 
- private void buildPaneltableau(int num_semaine){
+ private void buildPaneltableau(int num_semaine)
+ {
 
      // initialiser les panels
     paneltableau=new JPanel();
@@ -286,8 +300,18 @@ public EdtPage (int width , int height , EdtControleur edtC,Etudiant etudiant)
         //Container container = panelgrille.getContentPane();
 
         ArrayList < JPanel > components = new ArrayList < JPanel >();
-        ArrayList<Seance> seances = edtc.infosemainegroupe(etudiant.getGroupe(),num_semaine);
+        seances = edtc.infosemainegroupe(etudiant.getGroupe(),num_semaine);
         Collections.sort(seances);
+        if (droit != 1 && droit != 2)
+        {
+            for (int i = 0; i < seances.size(); i++) 
+            {
+                if (seances.get(i).getEtat() == 1)
+                {
+                    seances.remove(i);
+                }
+            }
+        }
         int cpt = 0;
         
         
@@ -295,6 +319,7 @@ public EdtPage (int width , int height , EdtControleur edtC,Etudiant etudiant)
         JPanel temp = null;
         String[] jours = { "Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi"};
 
+        
         for(int i =0;i<6;i++)
         {
           temp = new JPanel();
@@ -309,7 +334,10 @@ public EdtPage (int width , int height , EdtControleur edtC,Etudiant etudiant)
             c.gridx = z;
             
             temp= new JPanel();  // cours ?
-            
+              Random rand = new Random();
+             float rand1 =rand.nextFloat();
+             float rand2 =rand.nextFloat();
+             float rand3 =rand.nextFloat();
             
             if (cpt < seances.size() )
             {
@@ -321,11 +349,11 @@ public EdtPage (int width , int height , EdtControleur edtC,Etudiant etudiant)
                     if (seances.get(cpt).getChiffreHeure() == z)
                     {
                         // Il y a un cours à cet horaire
-                        JPanel cours = new JPanel();  // new SeanceCarre()
-                        cours.add(new JLabel(seances.get(cpt).getCours().getNom()));
+                        rectanglesCours cours = new rectanglesCours(s,rand1,rand2,rand3);  // new SeanceCarre()
+                        //cours.add(new JLabel(seances.get(cpt).getCours().getNom()));
                         javax.swing.border.Border line =  BorderFactory.createLineBorder(Color.white);
-                        cours.setPreferredSize(new Dimension(160, 60));
-                        cours.setBackground(Color.blue);
+                        cours.setPreferredSize(new Dimension(170, 100));
+                        cours.setBackground( new Color(rand1,rand2,rand3));
                         cours.setBorder(line);
                         components.add(cours);
 
@@ -337,7 +365,7 @@ public EdtPage (int width , int height , EdtControleur edtC,Etudiant etudiant)
                     else
                     {
                         javax.swing.border.Border line =  BorderFactory.createLineBorder(Color.white);
-                        temp.setPreferredSize(new Dimension(160, 60));
+                        temp.setPreferredSize(new Dimension(170, 100));
                         temp.setBackground(Color.lightGray);
                         temp.setBorder(line);
                         components.add(temp);
@@ -349,7 +377,7 @@ public EdtPage (int width , int height , EdtControleur edtC,Etudiant etudiant)
                 else 
                 {
                     javax.swing.border.Border line =  BorderFactory.createLineBorder(Color.white);
-                    temp.setPreferredSize(new Dimension(160, 60));
+                    temp.setPreferredSize(new Dimension(170,100));
                     temp.setBackground(Color.lightGray);
                     temp.setBorder(line);
                     components.add(temp);
@@ -361,7 +389,7 @@ public EdtPage (int width , int height , EdtControleur edtC,Etudiant etudiant)
             else
             {
                 javax.swing.border.Border line =  BorderFactory.createLineBorder(Color.white);
-                temp.setPreferredSize(new Dimension(160, 60));
+                temp.setPreferredSize(new Dimension(170,100));
                 temp.setBackground(Color.lightGray);
                 temp.setBorder(line);
                 components.add(temp);
@@ -429,10 +457,21 @@ public EdtPage (int width , int height , EdtControleur edtC,Etudiant etudiant)
 
      private void buildpanelliste(int num_semaine)
      {
-
+            panelliste = new JPanel();
             JPanel semaine=new JPanel();
             //ArrayList<Seance> seances= edtc.infosemaine();
-            ArrayList<Seance> seances = edtc.infosemainegroupe(etudiant.getGroupe(),num_semaine);
+            seances = edtc.infosemainegroupe(etudiant.getGroupe(),num_semaine);
+            if (droit != 1 && droit != 2)
+            {
+                for (int i = 0; i < seances.size(); i++) 
+                {
+                    if (seances.get(i).getEtat() == 1)
+                    {
+                        seances.remove(i);
+                    }
+                }
+            }
+            liste_panels_jour = new ArrayList<>(500);
 
             Collections.sort(seances);
 
@@ -441,13 +480,13 @@ public EdtPage (int width , int height , EdtControleur edtC,Etudiant etudiant)
             LocalDate dateseance = null;
          System.out.println(""+seances.size());
          int a=0;
-
          for( int i=0 ;i<seances.size();i++)
          {
 
             Seance seance = seances.get(i);
+            JPanel jour = null;
 
-            if(seance.getEtat()!=1){
+            
 
             ArrayList <Groupe> liste_groupes =seance.getListeGroupes();
             ArrayList <Salle> liste_salles = seance.getListeSalles();
@@ -455,7 +494,7 @@ public EdtPage (int width , int height , EdtControleur edtC,Etudiant etudiant)
             TypeCours type = seance.getType();
             Cours Objetcours = seance.getCours();
 
-            JPanel jour=new JPanel();
+            jour=new JPanel();
             JPanel cours=new JPanel();
             JPanel date= new JPanel();
             JPanel carre= new JPanel();
@@ -469,6 +508,10 @@ public EdtPage (int width , int height , EdtControleur edtC,Etudiant etudiant)
             if(seance.getEtat()==3){
             carre.add(new JLabel(" COURS ANNULE "));
             carre.setBackground(Color.orange);
+            }
+            if(seance.getEtat()==1){
+            carre.add(new JLabel("NON VALIDE"));
+            carre.setBackground(Color.yellow);
             }
             heure.add(new JLabel(" "+seance.getHeured()+"-"+seance.getHeuref()+" "));
 
@@ -552,28 +595,75 @@ public EdtPage (int width , int height , EdtControleur edtC,Etudiant etudiant)
                //jour.add(date,o);
                semaine.add(date);
             }
-
-
            }   
-
-
-
            a=a+5;
-
            o.gridy=a;
-
           // date.add(new JLabel(" "+seance.getDate()+" "));
            jour.add(cours,o);
            semaine.add(jour);
            a=a+5;
-            }
+            
+            liste_panels_jour.add(jour);
          }
-         
-
+ 
         panelliste.add(semaine);
+        
+        
+        // Créer autant de menus que de panels jour
+         if (this.droit == 1)
+        {
+                liste_des_menus= new ArrayList<>(500);
+                liste_des_items_modifier= new ArrayList<>(500);
+                liste_des_items_supprimer= new ArrayList<>(500);
+                for (int i = 0; i < liste_panels_jour.size(); i++) 
+                {
 
+                    JPopupMenu jModSupp = new JPopupMenu();
+                    JMenu JMA_modifier_seance = new JMenu("Modifier la seance");
+                    JMenu JMA_supp_seance = new JMenu("Supprimer la seance");
+                    JMenuItem JMIA_mod_seance = new JMenuItem("Modifier la seance");
+                    JMenuItem JMIA_supp_seance = new JMenuItem("Supprimer la seance");
 
+                    JMIA_mod_seance.addActionListener(this);
+                    JMIA_supp_seance.addActionListener(this);
 
+                    JMA_modifier_seance.add(JMIA_mod_seance);
+                    JMA_supp_seance.add(JMIA_supp_seance);
+                    jModSupp.add(JMA_modifier_seance);
+                    jModSupp.add(JMA_supp_seance);
+
+                    liste_des_menus.add(jModSupp);
+                    liste_des_items_modifier.add(JMIA_mod_seance);
+                    liste_des_items_supprimer.add(JMIA_supp_seance);
+                }
+        }
+
+         // Ajouter les listeners 
+         if (this.droit == 1)
+         {
+            for (int i = 0; i < liste_panels_jour.size(); i++) 
+            {
+                JPopupMenu jpm = liste_des_menus.get(i);
+                JPanel jourK = liste_panels_jour.get(i);
+                if (droit == 1)
+                {
+                   liste_panels_jour.get(i).addMouseListener(new MouseAdapter() 
+                   {
+                        public void mouseReleased(MouseEvent event)
+                        {
+                            if(event.getButton() == MouseEvent.BUTTON3)
+                            {
+                                if(event.isPopupTrigger())
+                                {   
+                                    //System.out.println("Affiche popo");
+                                    jpm.show(jourK, event.getX(), event.getY());
+                                }    
+                            }
+                        }
+                    });
+                }
+            } 
+         }
 
     }
 
@@ -583,30 +673,82 @@ public EdtPage (int width , int height , EdtControleur edtC,Etudiant etudiant)
         if (e.getSource() == affichage )
         {
             String type_affichage = (String) affichage.getSelectedItem();
+            String numero_semaine = (String)lisetSemaines.getSelectedValue();
+            if (numero_semaine == null)
+            {
+                numero_semaine = "23";
+            }
+            if (numero_semaine.length() >= 5)
+            {
+                numero_semaine = numero_semaine.substring(0,2);
+            }
+            else
+            {
+                numero_semaine = numero_semaine.substring(0,1);
+            }
+            int numero_semaine_choie = Integer.parseInt(numero_semaine);
+            
             if (type_affichage.equals("En grille"))
             {
-                //panelGlobal.remove(paneltableau);
-                paneltableau.removeAll();
-                //panelGlobal.remove(scrollsemaine);
-                buildPaneltableau(23);
+                
+                remove(panelGlobal);
+                
+                panelGlobal = new JPanel();
+  
+                buildPaneltableau(numero_semaine_choie);
+                //buildpanelliste(23);
+           
+
+                // Ajouter le panel global à la frame
+                panelGlobal.setLayout(new BoxLayout(panelGlobal,BoxLayout.PAGE_AXIS));
+                
+
+                panelGlobal.add(panelmenu);
+                
+                panelGlobal.add(panelrecherche);
+                
+                panelGlobal.add(panelsemaines);
+                
+
                 panelGlobal.add(paneltableau);
+                //scrollsemaine =new JScrollPane(panelliste);
+                //panelGlobal.add(scrollsemaine);
+
+                add(panelGlobal);
+
                 SwingUtilities.updateComponentTreeUI(this);
             }
             else if (type_affichage.equals("En liste"))
             {
-                // code pour afficher en liste
+                
+                remove(panelGlobal);
+                
+                panelGlobal = new JPanel();
+  
+                //buildPaneltableau(23);
+                buildpanelliste(numero_semaine_choie);
+           
+
+                // Ajouter le panel global à la frame
+                panelGlobal.setLayout(new BoxLayout(panelGlobal,BoxLayout.PAGE_AXIS));
+                
+
+                panelGlobal.add(panelmenu);
+                
+                panelGlobal.add(panelrecherche);
+                
+                panelGlobal.add(panelsemaines);
+                
+
+                //panelGlobal.add(paneltableau);
+                scrollsemaine =new JScrollPane(panelliste);
+                panelGlobal.add(scrollsemaine);
+
+                add(panelGlobal);
+
+                SwingUtilities.updateComponentTreeUI(this);
+                
             
-            //panelGlobal.remove(scrollsemaine);
-            panelliste.removeAll();
-            panelGlobal.remove(paneltableau);
-            int numero_semaine_choie = 23;
-            System.out.println(numero_semaine_choie);
-            
-            buildpanelliste(numero_semaine_choie);
-            
-            scrollsemaine = new JScrollPane(panelliste);
-            panelGlobal.add (scrollsemaine);
-            SwingUtilities.updateComponentTreeUI(this);
             }
         }
     }
@@ -648,8 +790,9 @@ public EdtPage (int width , int height , EdtControleur edtC,Etudiant etudiant)
             {
                 panelGlobal.remove(paneltableau);
                 paneltableau.removeAll();
-                panelGlobal.remove(scrollsemaine);
-                buildPaneltableau(23);
+                
+                int numero_semaine_choie = Integer.parseInt(numero_semaine);
+                buildPaneltableau(numero_semaine_choie);
                 panelGlobal.add(paneltableau);
                 SwingUtilities.updateComponentTreeUI(this);
             } 
@@ -669,6 +812,29 @@ public EdtPage (int width , int height , EdtControleur edtC,Etudiant etudiant)
                 SwingUtilities.updateComponentTreeUI(this);
             }
             
+        }
+    }
+    
+    @Override
+    public void actionPerformed(ActionEvent e) 
+    {
+        System.out.println("IAM: "+liste_des_items_modifier.size());
+        for (int i = 0; i < liste_des_items_modifier.size(); i++) 
+        {
+            if (e.getSource() == liste_des_items_modifier.get(i))
+            {
+                JOptionPane.showMessageDialog(this, "Cliqué");
+                JOptionPane.showMessageDialog(this, "Seance: "+seances.get(i).getId());
+                Seance s = seances.get(i);
+                edtc.ouvrir_dialog_modifier_seance(s);
+            }
+            
+            else if (e.getSource() == liste_des_items_supprimer.get(i))
+            {
+                JOptionPane.showMessageDialog(this, "Cliqué supp");
+                Seance s = seances.get(i);
+                edtc.supprimer_seance(s);
+            }
         }
     }
 }

@@ -560,7 +560,8 @@ public class SeanceDAO extends DAO<Seance>
         {
                 // On supprime la séance de séance (par le mécanisme des clés étrangères elle sera supprimée aussi des autres tables)
                 Statement stmtSe86=connect.createStatement(); 
-                success =stmtSe86.executeUpdate("DELETE FROM seance WHERE ID='"+id+"'");  
+                //success =stmtSe86.executeUpdate("DELETE FROM seance WHERE ID='"+id+"'");
+                success =stmtSe86.executeUpdate("UPDATE seance SET Etat = '3' WHERE ID='"+id+"'");
 
         } 
         catch (Exception e) 

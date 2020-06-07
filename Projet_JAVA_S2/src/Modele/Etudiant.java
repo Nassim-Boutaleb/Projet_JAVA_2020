@@ -67,5 +67,16 @@ public class Etudiant extends Utilisateur
         return liste_etu;
     }
     
+    public static Etudiant  charger_etu_BDD_nom_prenom (String nom, String prenom)
+    {
+        Utilisateur util = Utilisateur.charger_utilisateur_BDD_nom_prenom(nom, prenom);
+        System.out.println("UTILLL: "+util.getNom()+" "+util.getId());
+        EtudiantDAO edao = new EtudiantDAO();
+        Etudiant etudiant = edao.find(util);
+        System.out.println("EDUUUUU: "+etudiant.getNom());
+        
+        return etudiant;
+    }
+    
     
 }

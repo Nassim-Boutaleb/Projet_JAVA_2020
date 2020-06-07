@@ -26,6 +26,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.Random;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.event.ListSelectionEvent;
@@ -105,9 +106,9 @@ public class edtProf extends JFrame implements ActionListener, ListSelectionList
 
         // construire le panel global
         buildPanelmenu();
-        buildPanelrecherche();
+        //buildPanelrecherche();
         buildPanelsemaines();
-        buildPaneltableau();
+        buildPaneltableau(23);
         buildpanelliste(23);
         //definir les tailles des panels
 
@@ -125,7 +126,7 @@ public class edtProf extends JFrame implements ActionListener, ListSelectionList
         c.gridheight=20;
         c.gridx =0;
         c.gridy=50; */
-        panelGlobal.add(panelrecherche);
+        //panelGlobal.add(panelrecherche);
         /*c.gridwidth = 100;
         c.gridheight=20;
         c.gridx =0;
@@ -164,6 +165,12 @@ public class edtProf extends JFrame implements ActionListener, ListSelectionList
 
     private void buildPanelmenu() {
 
+        String[] choices1 = { "En grille","En liste"};
+        affichage = new JComboBox(choices1);
+        affichage.setSelectedIndex(1);
+        affichage.addItemListener(this);
+        
+        
         menubar = new JMenuBar();
         JMenu edt = new JMenu("Emploi du temps ");
         JMenu cours = new JMenu("Récapitulatif des cours");
@@ -173,20 +180,17 @@ public class edtProf extends JFrame implements ActionListener, ListSelectionList
         menubar.add(edt);
         menubar.add(cours);
         panelmenu.add(menubar);
+        panelmenu.add(affichage);
 
     }
     private void buildPanelrecherche(){
 
 
-        String[] choices1 = { "En grille","En liste"};
-        String[] choices2 = { "Saisie du nom"};
-        affichage = new JComboBox(choices1);
-        affichage.setSelectedIndex(1);
-        affichage.addItemListener(this);
         
-        recherche = new JComboBox(choices2);
-        rechercher = new JButton("Recherche");
-        recherche.addItemListener(this);
+        
+      
+        
+        
         
         saisieRecherche = new JTextField("",30);
         panelrecherche.add(affichage);
@@ -243,12 +247,12 @@ public class edtProf extends JFrame implements ActionListener, ListSelectionList
 
     }
 
- private void buildPaneltableau()
+ private void buildPaneltableau(int num_semaine)
  {
-
-     // Initialiser les panels
+// initialiser les panels
     paneltableau=new JPanel();
     panelgrille=new JPanel();
+
 
      // panel des heures (hope it will work !)
      //paneltableau.setLayout(new GridBagLayout());
@@ -299,10 +303,16 @@ public class edtProf extends JFrame implements ActionListener, ListSelectionList
         //Container container = panelgrille.getContentPane();
 
         ArrayList < JPanel > components = new ArrayList < JPanel >();
+        ArrayList<Seance> seances = edtc.infosemaineprof(prof.getId(),num_semaine);
+        Collections.sort(seances);
+        int cpt = 0;
+        
+        
+        
         JPanel temp = null;
         String[] jours = { "Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi"};
-        // Populating Arraylist object.
-        //c.gridwidth = 1;
+
+        
         for(int i =0;i<6;i++)
         {
           temp = new JPanel();
@@ -312,29 +322,100 @@ public class edtProf extends JFrame implements ActionListener, ListSelectionList
           c.gridx = 0;
           panelgrille.add(temp,c);
           int z =1;
-          while(z<8)
+          while(z<8) // placer en ligne
           {
             c.gridx = z;
-            temp= new JPanel();
-            javax.swing.border.Border line =  BorderFactory.createLineBorder(Color.white);
-            JPanel panel = new JPanel();
-            LayoutManager layout = new FlowLayout();
-            panel.setLayout(layout);       
-            String spaces = "                   ";
+            
+            temp= new JPanel();  // cours ?
+              Random rand = new Random();
+             float rand1 =rand.nextFloat();
+             float rand2 =rand.nextFloat();
+             float rand3 =rand.nextFloat();
+            
+            if (cpt < seances.size() )
+            {
+                Seance s = seances.get(cpt);
+                if (seances.get(cpt).getChiffreDate() == i)
+                {
+                    // il y a un cours ce jour
+                    System.out.println("Heure recue: "+seances.get(cpt).getChiffreHeure()+" z: "+z);
+                    if (seances.get(cpt).getChiffreHeure() == z)
+                    {
+                        // Il y a un cours à cet horaire
+                        rectanglesCours cours = new rectanglesCours(s,rand1,rand2,rand3);  // new SeanceCarre()
+                        //cours.add(new JLabel(seances.get(cpt).getCours().getNom()));
+                        javax.swing.border.Border line =  BorderFactory.createLineBorder(Color.white);
+                        cours.setPreferredSize(new Dimension(170, 100));
+                        cours.setBackground( new Color(rand1,rand2,rand3));
+                        cours.setBorder(line);
+                        components.add(cours);
 
-            temp.add(new JLabel(""+(components.size()+1)));
+                        //container.add(temp);
+                        panelgrille.add(cours,c);
+                        cpt ++;
+                        
+                    }
+                    else
+                    {
+                        javax.swing.border.Border line =  BorderFactory.createLineBorder(Color.white);
+                        temp.setPreferredSize(new Dimension(170, 100));
+                        temp.setBackground(Color.lightGray);
+                        temp.setBorder(line);
+                        components.add(temp);
 
-            temp.setPreferredSize(new Dimension(160, 60));
-            temp.setBackground(Color.lightGray);
-            temp.setBorder(line);
-            components.add(temp);
+                        //container.add(temp);
+                        panelgrille.add(temp,c);
+                    }
+                }
+                else 
+                {
+                    javax.swing.border.Border line =  BorderFactory.createLineBorder(Color.white);
+                    temp.setPreferredSize(new Dimension(170,100));
+                    temp.setBackground(Color.lightGray);
+                    temp.setBorder(line);
+                    components.add(temp);
 
-            //container.add(temp);
-            panelgrille.add(temp,c);
+                    //container.add(temp);
+                    panelgrille.add(temp,c);
+                }
+            }
+            else
+            {
+                javax.swing.border.Border line =  BorderFactory.createLineBorder(Color.white);
+                temp.setPreferredSize(new Dimension(170,100));
+                temp.setBackground(Color.lightGray);
+                temp.setBorder(line);
+                components.add(temp);
+
+                //container.add(temp);
+                panelgrille.add(temp,c);
+            }
+            
+            
             z++;
           }
         }
-        JPanel p = new JPanel();
+        
+        /*for (int i = 0; i < seances.size(); i++) 
+        {
+            JPanel p = new JPanel();  // (seances.get(i))
+            p.setBackground(Color.blue);
+            
+            if (seances.get(i).getDate() == "Lundi" )
+            {
+                 if (seances.get(i).getHeured().equals("08:30:00"))
+                 {
+                     JPanel m = components.get(0);
+                    c.gridx =0;
+                    c.gridy=0;
+                    panelgrille.add(p,c);
+                 }
+                
+            }
+            
+        }*/
+        
+        /*JPanel p = new JPanel();
         JPanel m = components.get(5);
         panelgrille.remove(m);
         p.add(new JLabel("5"));
@@ -345,7 +426,7 @@ public class edtProf extends JFrame implements ActionListener, ListSelectionList
         c.gridx =6;
         c.gridy=0;
         //c.gridwidth = 1;
-        panelgrille.add(p,c);
+        panelgrille.add(p,c); */
 
         /*for(Component e : panelgrille.getComponents()){
             if(e instanceof JPanel){
@@ -426,8 +507,8 @@ public class edtProf extends JFrame implements ActionListener, ListSelectionList
                     //cours.setPreferredSize(new Dimension(400,60));
 
                     jour.setLayout(new GridBagLayout());
-                    jour.setPreferredSize(new Dimension(500,110));
-                    date.setPreferredSize(new Dimension(500,50));
+                    jour.setPreferredSize(new Dimension(620,110));
+                    date.setPreferredSize(new Dimension(620,50));
                     date.setBackground(Color.red);
 
                     cours.setLayout(new GridBagLayout());
@@ -582,7 +663,7 @@ public class edtProf extends JFrame implements ActionListener, ListSelectionList
 
     }
 
-    @Override
+   @Override
     public void itemStateChanged(ItemEvent e) 
     {
         if (e.getSource() == affichage )
@@ -590,28 +671,64 @@ public class edtProf extends JFrame implements ActionListener, ListSelectionList
             String type_affichage = (String) affichage.getSelectedItem();
             if (type_affichage.equals("En grille"))
             {
-                panelGlobal.remove(paneltableau);
-                paneltableau.removeAll();
-                panelGlobal.remove(scrollsemaine);
-                buildPaneltableau();
+                remove(panelGlobal);
+                
+                panelGlobal = new JPanel();
+  
+                buildPaneltableau(23);
+                //buildpanelliste(23);
+           
+
+                // Ajouter le panel global à la frame
+                panelGlobal.setLayout(new BoxLayout(panelGlobal,BoxLayout.PAGE_AXIS));
+                
+
+                panelGlobal.add(panelmenu);
+                
+                panelGlobal.add(panelrecherche);
+                
+                panelGlobal.add(panelsemaines);
+                
+
                 panelGlobal.add(paneltableau);
+                //scrollsemaine =new JScrollPane(panelliste);
+                //panelGlobal.add(scrollsemaine);
+
+                add(panelGlobal);
+
                 SwingUtilities.updateComponentTreeUI(this);
             }
             else if (type_affichage.equals("En liste"))
             {
-                // code pour afficher en liste
+                
+                remove(panelGlobal);
+                
+                panelGlobal = new JPanel();
+  
+                //buildPaneltableau(23);
+                buildpanelliste(23);
+           
+
+                // Ajouter le panel global à la frame
+                panelGlobal.setLayout(new BoxLayout(panelGlobal,BoxLayout.PAGE_AXIS));
+                
+
+                panelGlobal.add(panelmenu);
+                
+                panelGlobal.add(panelrecherche);
+                
+                panelGlobal.add(panelsemaines);
+                
+
+                //panelGlobal.add(paneltableau);
+                scrollsemaine =new JScrollPane(panelliste);
+                panelGlobal.add(scrollsemaine);
+
+                add(panelGlobal);
+
+                SwingUtilities.updateComponentTreeUI(this);
+                
             
-            panelGlobal.remove(scrollsemaine);
-            panelliste.removeAll();
-            panelGlobal.remove(paneltableau);
-            int numero_semaine_choie = 23;
-            System.out.println(numero_semaine_choie);
-            
-            buildpanelliste(numero_semaine_choie);
-            
-            scrollsemaine = new JScrollPane(panelliste);
-            panelGlobal.add (scrollsemaine);
-            SwingUtilities.updateComponentTreeUI(this);
             }
         }
     }
@@ -631,8 +748,12 @@ public class edtProf extends JFrame implements ActionListener, ListSelectionList
                 numero_semaine = numero_semaine.substring(0,1);
             }
             
+            
+            
             // Code dont on a parlé
-            panelGlobal.remove(scrollsemaine);
+            // En fonction de si on est en grille ou en liste
+            
+            /*panelGlobal.remove(scrollsemaine);
             panelliste.removeAll();
             
             int numero_semaine_choie = Integer.parseInt(numero_semaine);
@@ -642,7 +763,34 @@ public class edtProf extends JFrame implements ActionListener, ListSelectionList
             
             scrollsemaine = new JScrollPane(panelliste);
             panelGlobal.add (scrollsemaine);
-            SwingUtilities.updateComponentTreeUI(this);
+            SwingUtilities.updateComponentTreeUI(this); */
+            
+            String type_affichage = (String) affichage.getSelectedItem();
+            if (type_affichage.equals("En grille"))
+            {
+                panelGlobal.remove(paneltableau);
+                paneltableau.removeAll();
+                
+                int numero_semaine_choie = Integer.parseInt(numero_semaine);
+                buildPaneltableau(numero_semaine_choie);
+                panelGlobal.add(paneltableau);
+                SwingUtilities.updateComponentTreeUI(this);
+            } 
+            else if (type_affichage.equals("En liste"))
+            {
+                // code pour afficher en liste
+                System.out.println("ici");
+                panelGlobal.remove(scrollsemaine);
+                panelliste.removeAll();
+                //panelGlobal.remove(paneltableau);
+
+                int numero_semaine_choie = Integer.parseInt(numero_semaine);
+                buildpanelliste(numero_semaine_choie);
+
+                scrollsemaine = new JScrollPane(panelliste);
+                panelGlobal.add (scrollsemaine);
+                SwingUtilities.updateComponentTreeUI(this);
+            }
             
         }
     }

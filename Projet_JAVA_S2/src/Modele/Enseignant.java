@@ -11,7 +11,8 @@ import java.util.ArrayList;
  *
  * @author Oumou Sow, Nassim Boutaleb, Grace Gnenago
  */
-public class Enseignant extends Utilisateur{
+public class Enseignant extends Utilisateur
+{
 
     private ArrayList<Cours> liste_cours  = new ArrayList<>(500);
     
@@ -19,6 +20,12 @@ public class Enseignant extends Utilisateur{
     {
         super(id,email,passwd,nom,prenom,droit);
         liste_cours = cours;
+    }
+    
+    // Ce constructeur permet de créer un enseignant sans sa liste de cours (mise à jour plus tard via le setter)
+    public Enseignant (int id , String email , String passwd , String nom, String prenom , int droit)
+    {
+        super(id,email,passwd,nom,prenom,droit);
     }
     
 
@@ -33,6 +40,11 @@ public class Enseignant extends Utilisateur{
     public void addCours (Cours cours)
     {
         liste_cours.add (cours);
+    }
+    
+    public void setListeCours (ArrayList<Cours> lc)
+    {
+        liste_cours = lc ;
     }
     
     
@@ -74,6 +86,31 @@ public class Enseignant extends Utilisateur{
         Enseignant ut = udao.find(id);
         
         return ut;
+    }
+    
+    public static Enseignant charger_enseignant_BDD_nom_prenom (String nom, String prenom)
+    {
+        
+        // récupérer Enseignant depuis la BDD
+        EnseignantDAO udao = new EnseignantDAO();
+        Enseignant ut = udao.find_nom_prenom(nom, prenom);
+        
+        return ut;
+    }
+    
+    // Cette méthode retourne une liste avec tous les enseignants de la BDD
+
+    /**
+     *
+     * @return
+     */
+    public static ArrayList <Enseignant> getListeEnseignants ()
+    {
+        ArrayList<Enseignant> liste_ens = new ArrayList<>(100);
+        EnseignantDAO ensDao = new EnseignantDAO();
+        liste_ens = ensDao.getAllEnseignants();
+                
+        return liste_ens;
     }
     
     

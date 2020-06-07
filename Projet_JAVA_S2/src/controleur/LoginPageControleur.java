@@ -6,6 +6,8 @@
 package controleur;
 
 import Modele.*;
+import static Modele.Enseignant.charger_enseignant_BDD;
+import static Modele.Etudiant.charger_etudiant_BDD;
 import Vue.*;
 import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
@@ -73,20 +75,37 @@ public class LoginPageControleur {
                
                 //JOptionPane.showMessageDialog(logPage,"Connexion réussie. Bonjour "+ut.getPrenom()+" "+ut.getNom());
                 logPage.setVisible(false);
-                new EdtControleur();
+                
                 
                 // Vérfier de qui il s'agit
-                /*if (ut.getDroit() == 1)  // etudiant
+                if (ut.getDroit() == 4 )  // etudiant
                 {
                     // instancier un étudiant
-                    
+                    Etudiant etudiant=charger_etudiant_BDD(ut.getId());
                     // appler la méthode pour fermer la page de login et appeler la page edt
                     logPage.dispose();
                     
                     // Créer nouveau controleur EdtControleur
+                    new EdtControleur(etudiant);
                     
+                } 
+                else if(ut.getDroit()== 3){
+                // instancier un étudiant
+                    Enseignant prof=charger_enseignant_BDD(ut.getId());
+                    // appler la méthode pour fermer la page de login et appeler la page edt
+                    logPage.dispose();
                     
-                } */
+                    // Créer nouveau controleur EdtControleur
+                    new EdtControleurProf(prof);
+                    
+                }else if(ut.getDroit()==2){
+                    AdminGestionControleur agc = new AdminGestionControleur();
+                    agc.ouvrirAdminpage(); 
+                }
+                else if(ut.getDroit()==1){
+                    AdminGestionControleur agc = new AdminGestionControleur();
+                    agc.ouvrirAdminpage(); 
+                }
             }
             
             // les mots de passe ne correspondent pas

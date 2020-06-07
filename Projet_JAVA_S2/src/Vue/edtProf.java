@@ -15,6 +15,7 @@ import Modele.Seance;
 import Modele.TypeCours;
 import Modele.Utilisateur;
 import controleur.EdtControleur;
+import controleur.EdtControleurProf;
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
@@ -35,7 +36,7 @@ import javax.swing.event.ListSelectionListener;
  *
  * @author pezi
  */
-public class EdtPage extends JFrame implements ActionListener, ListSelectionListener, ItemListener{
+public class edtProf extends JFrame implements ActionListener, ListSelectionListener, ItemListener{
     private GridLayout calendar;
     private JPanel panelGlobal;// panels
     private JPanel panelliste;
@@ -51,21 +52,21 @@ public class EdtPage extends JFrame implements ActionListener, ListSelectionList
     private JButton rechercher;
     private JTextField saisieRecherche;
     private JMenuBar menubar;
-    private EdtControleur edtc ;  // stocker le controleur
+    private EdtControleurProf edtc ;  // stocker le controleur
     private Utilisateur utilisateur;
-    private Etudiant etudiant;
+    private Enseignant prof;
     private int WINDOW_WIDTH = 1280;
     private int WINDOW_HEIGHT = 660;
     private JList<String> lisetSemaines;
     private JScrollPane scrollsemaine;
 
 
-public EdtPage (int width , int height , EdtControleur edtC,Etudiant etudiant)
+public edtProf (int width , int height , EdtControleurProf edtC,Enseignant Prof)
     {
         panelGlobal = new JPanel();
         // stocker le controleur
         this.edtc = edtC;
-        this.etudiant=etudiant;
+        this.prof=Prof;
 
 
 
@@ -130,9 +131,13 @@ public EdtPage (int width , int height , EdtControleur edtC,Etudiant etudiant)
         c.gridx =0;
         c.gridy=150; */
 
-        panelGlobal.add(paneltableau);
-        //scrollsemaine =new JScrollPane(panelliste);
-        //panelGlobal.add(scrollsemaine);
+        //panelGlobal.add(paneltableau);
+        //JPanel pp = new JPanel();
+        /*pp.add (new JLabel ("Graaaace"));
+        pp.setBackground(Color.red);
+        panelGlobal.add (pp); */
+        scrollsemaine =new JScrollPane(panelliste);
+        panelGlobal.add(scrollsemaine);
 
 
         add(panelGlobal);
@@ -354,7 +359,7 @@ public EdtPage (int width , int height , EdtControleur edtC,Etudiant etudiant)
 
             JPanel semaine=new JPanel();
             //ArrayList<Seance> seances= edtc.infosemaine();
-            ArrayList<Seance> seances= edtc.infosemainegroupe(etudiant.getGroupe(),num_semaine);
+            ArrayList<Seance> seances= edtc.infosemaineprof(prof.getId(),num_semaine);
 
             Collections.sort(seances);
 
@@ -386,7 +391,6 @@ public EdtPage (int width , int height , EdtControleur edtC,Etudiant etudiant)
             JPanel groupe= new JPanel();
             JPanel salle= new JPanel();
             JPanel format= new JPanel();
-            JPanel enseignant=new JPanel();
 
             if(seance.getEtat()==3){
             carre.add(new JLabel(" COURS ANNULE "));
@@ -399,8 +403,8 @@ public EdtPage (int width , int height , EdtControleur edtC,Etudiant etudiant)
             //cours.setPreferredSize(new Dimension(400,60));
 
             jour.setLayout(new GridBagLayout());
-            jour.setPreferredSize(new Dimension(620,110));
-            date.setPreferredSize(new Dimension(620,50));
+            jour.setPreferredSize(new Dimension(500,110));
+            date.setPreferredSize(new Dimension(500,50));
             date.setBackground(Color.red);
 
             cours.setLayout(new GridBagLayout());
@@ -441,16 +445,8 @@ public EdtPage (int width , int height , EdtControleur edtC,Etudiant etudiant)
            cours.add(salle,e);
 
            }
-            for(int uprof=0;uprof<liste_enseignants.size();uprof++){
 
            e.gridx=25;
-           JLabel nomprof= new JLabel(liste_enseignants.get(uprof).getNom()+"  ");
-           enseignant.setLayout(new BoxLayout(enseignant,BoxLayout.Y_AXIS ));
-           enseignant.add(nomprof);
-           cours.add(enseignant,e);
-
-           }
-           e.gridx=30;
 
            JLabel nomtype= new JLabel(type.getNom()+" ");
            format.add(nomtype);
@@ -490,7 +486,6 @@ public EdtPage (int width , int height , EdtControleur edtC,Etudiant etudiant)
            a=a+5;
             }
          }
-         
 
         panelliste.add(semaine);
 
@@ -547,8 +542,6 @@ public EdtPage (int width , int height , EdtControleur edtC,Etudiant etudiant)
             {
                 numero_semaine = numero_semaine.substring(0,1);
             }
-            
-            
             
             // Code dont on a parlé
             panelGlobal.remove(scrollsemaine);

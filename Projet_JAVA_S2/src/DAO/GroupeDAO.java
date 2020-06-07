@@ -8,13 +8,14 @@ package DAO;
 
 import Modele.*;
 import java.sql.*;
-import javax.swing.JOptionPane;
+import java.util.ArrayList;
 
 /**
  *
- * @author adjasow
+ * @author Oumou Sow, Nassim Boutaleb, Grace Gnenago
  */
-public class GroupeDAO extends DAO{
+public class GroupeDAO extends DAO<Groupe>
+{
     
      public GroupeDAO (Connection conn)
     {
@@ -27,17 +28,19 @@ public class GroupeDAO extends DAO{
     }
 
     @Override
-    public boolean create() {
+    public int create(Groupe gp) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public boolean update() {
+    public int update(Groupe gp) 
+    {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public boolean delete() {
+    public int delete(Groupe gp) 
+    {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -53,27 +56,19 @@ public class GroupeDAO extends DAO{
          ut = null;
         try 
         {
-            Statement stmt=connect.createStatement(); 
+            Statement stmtG1=connect.createStatement(); 
 
             // récupérer Groupe en fonction de son nom
-            ResultSet rs=stmt.executeQuery("SELECT * FROM groupe WHERE id = '"+id+"'");  
-
-            // regarder si on a des résultats :
-            // récupération du résultat de l'ordre
-            ResultSetMetaData rsetMeta = rs.getMetaData();
-
-            // calcul du nombre de colonnes  
-            int nbColonne = rsetMeta.getColumnCount();
+            ResultSet rsG1=stmtG1.executeQuery("SELECT * FROM groupe WHERE id = '"+id+"'");  
             
             // sinon récupérer Groupe et le rendre
-            while (rs.next())  // si rien n'est trouvé on ne rentre pas dans le while
+            while (rsG1.next())  // si rien n'est trouvé on ne rentre pas dans le while
             {                
-                String nom = rs.getString(2);
-                int id_promotion= rs.getInt(3);
-                PromotionDAO promdao=new PromotionDAO();
-                Promotion prom= promdao.find(id_promotion);
+                String nom = rsG1.getString(2);
+                int id_promotion= rsG1.getInt(3);
+                //Promotion prom= Promotion.charger_Promotion_BDD(id_promotion);
                 // Créer Groupe
-                ut = new Groupe(id,nom,prom);
+                ut = new Groupe(id,nom,id_promotion);
             }
 
             
@@ -87,12 +82,11 @@ public class GroupeDAO extends DAO{
         return ut;
     }
     
-    // rechercher un TypeCoursDAO à partir de son id
-    // rend null si non trouvé 
+
 
     /**
      *
-     * @param idc
+     * @param nom
      * @return
      */
     public Groupe find (String nom)
@@ -101,28 +95,21 @@ public class GroupeDAO extends DAO{
          ut = null;
         try 
         {
-            Statement stmt=connect.createStatement(); 
+            Statement stmtG1=connect.createStatement(); 
 
             // récupérer Groupe en fonction de son nom
-            ResultSet rs=stmt.executeQuery("SELECT * FROM groupe WHERE nom = '"+nom+"'");  
+            ResultSet rsG1=stmtG1.executeQuery("SELECT * FROM groupe WHERE nom = '"+nom+"'");  
 
-            // regarder si on a des résultats :
-            // récupération du résultat de l'ordre
-            ResultSetMetaData rsetMeta = rs.getMetaData();
-
-            // calcul du nombre de colonnes  
-            int nbColonne = rsetMeta.getColumnCount();
             
             // sinon récupérer Groupe et le rendre
-            while (rs.next())  // si rien n'est trouvé on ne rentre pas dans le while
+            while (rsG1.next())  // si rien n'est trouvé on ne rentre pas dans le while
             {                
-                int id = rs.getInt(1);
+                int id = rsG1.getInt(1);
                 // Créer Groupe
-                 int id_promotion= rs.getInt(3);
-                PromotionDAO promdao=new PromotionDAO();
-                Promotion prom= promdao.find(id_promotion);
+               int id_promotion= rsG1.getInt(3);
+               //Promotion prom= Promotion.charger_Promotion_BDD(id_promotion);
                 // Créer Groupe
-                ut = new Groupe(id,nom,prom);
+                ut = new Groupe(id,nom,id_promotion);
             }
 
             
@@ -135,6 +122,51 @@ public class GroupeDAO extends DAO{
         // retourner Groupe rempli ou null
         return ut;
     }
+    
+    /**
+     * Cette méthode retourne la liste de tous les groupes de la BDD
+     * @return
+     */
+    public ArrayList <Groupe> get_all_groups ()
+    {
+        ArrayList <Groupe> liste_groupes = new ArrayList<>(100);
+        Groupe groupe = null;
+        
+        try 
+        {
+            Statement stmtG1=connect.createStatement(); 
+
+            // récupérer Groupe en fonction de son nom
+            ResultSet rsG1=stmtG1.executeQuery("SELECT * FROM groupe ");  
+
+            
+            // sinon récupérer Groupe et le rendre
+            while (rsG1.next())  // si rien n'est trouvé on ne rentre pas dans le while
+            {                
+                int id = rsG1.getInt(1);
+                String nom = rsG1.getString(2);
+                
+                // Créer Groupe
+                int id_promotion= rsG1.getInt(3);
+                //Promotion prom= Promotion.charger_Promotion_BDD(id_promotion);
+                // Créer Groupe
+                groupe = new Groupe(id,nom,id_promotion);
+                
+                // l'ajouter à la liste des groupes
+                liste_groupes.add(groupe);
+            }
+
+            
+        }
+        catch(SQLException e) 
+        {
+            System.out.println(e.getMessage());
+        } 
+        return liste_groupes;
+        
+    }
+    
+    //public ArrayList <Groupe> get_groupes_par_promo ()
     
    
 }

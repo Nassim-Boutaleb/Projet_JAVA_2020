@@ -17,7 +17,7 @@ import java.util.ArrayList;
  *
  * @author Oumou Sow, Nassim Boutaleb, Grace Gnenago
  */
-public class Seance 
+public class Seance implements Comparable<Seance>
 {
     private int id;
     private int semaine;
@@ -74,8 +74,8 @@ public class Seance
     public LocalTime getHeured () { return heure_debut ; }
     public LocalTime getHeuref () { return heure_fin ; }
     public int getEtat () { return etat; }
-    public Cours getIdCours () { return cours; }
-    public TypeCours getIdType () { return type; }
+    public Cours getCours () { return cours; }
+    public TypeCours getType () { return type; }
     public ArrayList<Groupe> getListeGroupes () { return liste_groupes; }
     public ArrayList<Salle> getListeSalles () { return liste_salles; }
     public ArrayList<Enseignant> getListeEnseignants () { return liste_enseignants; }
@@ -102,6 +102,60 @@ public class Seance
         ArrayList<Seance> liste_seances = udao.find_from_semaine(semaine);
         
         return liste_seances;
+    }
+    
+    // Cette méthode rend une liste de toutes les séances pour une semaine donnée
+    public static ArrayList<Seance> charger_seance_BDD_semaine_groupe (int semaine, int id_groupe)
+    {
+        
+        // récupérer Seance depuis la BDD
+        SeanceDAO udao = new SeanceDAO();
+        ArrayList<Seance> liste_seances = udao.find_from_semaine_and_group(semaine,id_groupe);
+        
+        return liste_seances;
+    }
+    
+    
+    @Override
+    public int compareTo (Seance s2)
+    {
+        LocalDate dateS2 = s2.getDate();
+        
+        if (date.isAfter(dateS2))  // .compareTo(dateS2) >0 
+        {
+            return 1;
+        }
+        else if (date.isEqual(dateS2) )
+        {
+            return 0;
+        }
+        else 
+        {
+            return -1;
+        }
+    } 
+    
+    
+    public static ArrayList<Seance> charger_seance_BDD_semaine_prof (int semaine, int id_prof)
+    {
+        
+        // récupérer Seance depuis la BDD
+        SeanceDAO udao = new SeanceDAO();
+        ArrayList<Seance> liste_seances = udao.find_from_semaine_and_enseignant(semaine,id_prof);
+        
+        return liste_seances;
+    }
+
+    
+    /**
+     * Cette méthode ajoute la séance dans la BDD
+     * @return success = succès ou non de la requete INSERT INTO
+     */
+    public int ajouter_verifier_seance()
+    {
+        SeanceDAO sdao = new SeanceDAO();
+        int success = sdao.create(this);
+        return success;
     }
     
     

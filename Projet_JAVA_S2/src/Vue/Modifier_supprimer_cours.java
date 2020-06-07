@@ -35,7 +35,7 @@ public class Modifier_supprimer_cours extends JDialog implements ActionListener
 
   
     private JPanel P_cours ;
-    private String[] liste_cours = {"Traitement du signal 1","Porjet ING3","Mechkour"};
+    private String[] liste_cours; // = {"Traitement du signal 1","Porjet ING3","Mechkour"};
     private JComboBox CB_cours ;
     private JPanel P_Boutons;
     private JButton B_renommer ;
@@ -51,7 +51,7 @@ public class Modifier_supprimer_cours extends JDialog implements ActionListener
         this.controleur = cont;
         
         // Initialiser les listes pour les listes
-        //this.liste_promo = liste_promo;
+        liste_cours = controleur.get_liste_cours();
         
         // Créer le panel global
         panelGlobal = new JPanel(); 
@@ -89,15 +89,21 @@ public class Modifier_supprimer_cours extends JDialog implements ActionListener
         // Boutons renommer et supprimer le cours
         P_Boutons = new JPanel();
         P_Boutons.setLayout(new BoxLayout(P_Boutons,BoxLayout.LINE_AXIS));
+        
         B_renommer = new JButton("Renommer la matière");
+        B_renommer.addActionListener(this);
+                
         B_supprimer = new JButton("Supprimer la matière");
+        B_supprimer.addActionListener(this);
+        
         P_Boutons.add (B_renommer);
         P_Boutons.add(Box.createHorizontalStrut(20) );
         P_Boutons.add(B_supprimer);
         P_Boutons.setBackground(Color.white);
         
         // Le bouton OK
-        B_ok = new JButton("Valider");
+        B_ok = new JButton("Quitter cette fentetre");
+        B_ok.addActionListener(this);
 
         // Ajouter les panels au panel global dans la grille
         constr.gridx = 0;  constr.gridy = 0;  // se positionner
@@ -124,8 +130,27 @@ public class Modifier_supprimer_cours extends JDialog implements ActionListener
     
     
     @Override
-    public void actionPerformed(ActionEvent arg0) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void actionPerformed(ActionEvent e) 
+    {
+        if (e.getSource() == B_ok)
+        {
+            dispose (); // on ferme la boite de dialogue
+        }
+        
+        if (e.getSource() == B_renommer)
+        {
+            String nomCours = (String) CB_cours.getSelectedItem();
+            String nouveauNom = JOptionPane.showInputDialog(this,"Saisir nouveau nom : ");
+            controleur.renommer_cours(nomCours,nouveauNom);
+            
+            // remettre a jour la combo box
+            CB_cours.removeAllItems();
+            liste_cours = controleur.get_liste_cours();
+            for (int i = 0; i < liste_cours.length; i++) 
+            {
+                CB_cours.addItem(liste_cours[i]);
+            }
+        }
     }
     
 }

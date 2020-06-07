@@ -6,6 +6,7 @@
 package Modele;
 
 import DAO.*;
+import java.util.ArrayList;
 
 
 /**
@@ -16,18 +17,18 @@ public class Groupe
 {
     private int id;
     private String nom;
-    private Promotion promotion;
+    private int id_promotion;
     
     public Groupe ()
     {
         
     }
     
-    public Groupe (int id ,String nom,Promotion g_promotion)
+    public Groupe (int id ,String nom,int g_promotion)
     {
         this.id = id; 
         this.nom = nom;
-        promotion= g_promotion;
+        id_promotion= g_promotion;
         
     }
     
@@ -39,7 +40,7 @@ public class Groupe
     
     public int getId () { return id; }
     public String getNom () { return nom ; }
-    public Promotion getIdGroupe () { return promotion ; }
+    public int getIdPromotion () { return id_promotion ; }
     
     
     /**
@@ -69,6 +70,20 @@ public class Groupe
         Groupe ut = udao.find(id);
         
         return ut;
+    }
+    
+    /**
+     * Cette méthode retourne la liste de tous les groupes stockés en BDD
+     * @return
+     */
+    public static ArrayList<Groupe> get_liste_groupes ()
+    {
+        ArrayList<Groupe> liste_groupes = new ArrayList<>(100);
+        
+        GroupeDAO gdao = new GroupeDAO();
+        liste_groupes = gdao.get_all_groups();
+        
+        return liste_groupes;
     }
     
 }

@@ -15,16 +15,18 @@ public class Promotion
 {
     private int id;
     private String nom;
+    private ArrayList<Groupe> liste_groupe;
     
     public Promotion ()
     {
         
     }
     
-    public Promotion (int id ,String nom)
+    public Promotion (int id ,String nom, ArrayList<Groupe> lg)
     {
         this.id = id; 
         this.nom = nom;
+        liste_groupe = lg;
       
     }
     
@@ -36,6 +38,7 @@ public class Promotion
     
     public int getId () { return id; }
     public String getNom () { return nom ; }
+    public ArrayList<Groupe> getGroupes () { return liste_groupe ; }
     
     /**
      * @param nom    

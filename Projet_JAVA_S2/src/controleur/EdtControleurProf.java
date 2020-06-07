@@ -5,26 +5,26 @@
  */
 package controleur;
 
-
-import Modele.*;
-import static Modele.Etudiant.charger_etudiant_BDD;
-import Vue.*;
+import Modele.Enseignant;
+import Modele.Etudiant;
+import Modele.Groupe;
+import Modele.Seance;
+import Vue.EdtPage;
+import Vue.edtProf;
 import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
 import java.util.ArrayList;
-import javax.swing.JOptionPane;
 
 /**
  *
  * @author pezi
  */
-public class EdtControleur {
-    private EdtPage EdtPage ;  // stockage de la vue (page graphique)
+public class EdtControleurProf {
+    private edtProf edtProf ;  // stockage de la vue (page graphique)
     private int width;
     private int height;
-
-
-    public EdtControleur (Etudiant etudiant)
+    
+        public EdtControleurProf (Enseignant Prof)
     {
         // définir taille des fenetres
         //Récupérer taille utile de l'écran
@@ -41,21 +41,18 @@ public class EdtControleur {
         System.out.println(width);
         System.out.println(height);
         
-        ouvrirEdt(etudiant);
+        ouvrirEdtProf(Prof);
 
     }
-
-    // Méthode pour ouvrir une page de login
-
-    public void ouvrirEdt (Etudiant etudiant)
+        public void ouvrirEdtProf (Enseignant Prof)
     {
         // ouvrir et stocker la page de login et la rendre visible
         
         //if(utilisateur.getDroit()==4){
         //Etudiant  etudiant =charger_etudiant_BDD( )://utilisateur.getId());
-        EdtPage = new EdtPage(width, height,this,etudiant);
+        edtProf = new edtProf(width, height,this,Prof);
 
-        EdtPage.setVisible(true);//}
+        edtProf.setVisible(true);//}
     }
     
     public ArrayList<Seance>infosemaine()
@@ -65,21 +62,20 @@ public class EdtControleur {
         return ut;
         
     }
-        public ArrayList<Seance>infosemainegroupe(Groupe groupe,int numsemaine)
+        public ArrayList<Seance>infosemaineprof(int id_prof,int numsemaine)
     {
         
-        ArrayList<Seance> ut = Seance.charger_seance_BDD_semaine_groupe(numsemaine,groupe.getId());
+        ArrayList<Seance> ut = Seance.charger_seance_BDD_semaine_prof(numsemaine,id_prof);
         System.out.println(ut);
         return ut;
         
     }
-    
-    /*public int getEtudiant(String email){
-        Utilisateur ut = Utilisateur.charger_utilisateur_BDD(email);
-       Etudiant etudiantut.getId();
-        return  ut.getDroit();
-    }*/
-
-
-
 }
+
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+

@@ -6,6 +6,7 @@
 package Modele;
 
 import DAO.SalleDAO;
+import java.util.ArrayList;
 
 /**
  *
@@ -16,19 +17,19 @@ public class Salle {
     private int id;
     private String nom;
     private int capacite;
-    private Site site;
+    private int id_site;
     
     public Salle ()
     {
         
     }
     
-    public Salle (int id ,String nom, int capacite, Site site)
+    public Salle (int id ,String nom, int capacite, int site)
     {
         this.id = id; 
         this.nom = nom;
         this.capacite = capacite;
-        this.site=site;
+        this.id_site=site;
       
     }
     
@@ -42,7 +43,7 @@ public class Salle {
     public int getId () { return id; }
     public String getNom () { return nom ; }
     public int getCapacite () { return capacite ; }
-    public Site getIdSalla () { return site ; }
+    public int getIdSite () { return id_site ; }
     
     /**
      * @param nom    
@@ -66,6 +67,14 @@ public class Salle {
         Salle ut = udao.find(id);
         
         return ut;
+    }
+    
+    public static ArrayList<Salle> getListeSalles ()
+    {
+        ArrayList<Salle> liste_salles = new ArrayList<>(100);
+        SalleDAO sdao = new SalleDAO();
+        liste_salles = sdao.getAllSalles();
+        return liste_salles;
     }
     
 }

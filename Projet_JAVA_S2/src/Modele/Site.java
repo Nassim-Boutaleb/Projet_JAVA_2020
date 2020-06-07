@@ -6,6 +6,7 @@
 package Modele;
 
 import DAO.SiteDAO;
+import java.util.ArrayList;
 
 /**
  *
@@ -16,27 +17,31 @@ public class Site
     
     private int id;
     private String nom;
+    private ArrayList <Salle> liste_salles = new ArrayList<>(100);
     
     public Site ()
     {
         
     }
     
-    public Site (int id ,String nom)
+    public Site (int id ,String nom , ArrayList <Salle> salles)
     {
         this.id = id; 
         this.nom = nom;
+        liste_salles = salles;
       
     }
     
-    public void setSite (int id, String nom)
+    public void setSite (int id, String nom , ArrayList <Salle> salles)
     {
         this.id = id;
         this.nom = nom;
+        liste_salles = salles;
     }
     
     public int getId () { return id; }
     public String getNom () { return nom ; }
+    public ArrayList <Salle> getListeSalles () {return liste_salles; }
     
     /**
      * @param nom    
@@ -62,5 +67,13 @@ public class Site
         return ut;
     }
     
+    
+    public static ArrayList <Site> getListeSites ()
+    {
+        ArrayList <Site> liste_sites = new ArrayList<>(100);
+        SiteDAO sdao = new SiteDAO();
+        liste_sites = sdao.getAllSites();
+        return liste_sites;
+    }
     
 }

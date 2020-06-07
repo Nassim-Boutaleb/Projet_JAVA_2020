@@ -7,13 +7,12 @@ package DAO;
 
 import Modele.*;
 import java.sql.*;
-import javax.swing.JOptionPane;
 
 /**
  *
  * @author Nassim
  */
-public class UtilisateurDAO extends DAO
+public class UtilisateurDAO extends DAO<Utilisateur>
 {
 
     public UtilisateurDAO (Connection conn)
@@ -27,17 +26,20 @@ public class UtilisateurDAO extends DAO
     }
     
     @Override
-    public boolean create() {
+    public int create(Utilisateur util)
+    {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public boolean update() {
+    public int update(Utilisateur util)
+    {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public boolean delete() {
+    public int delete(Utilisateur util) 
+    {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -52,20 +54,20 @@ public class UtilisateurDAO extends DAO
         Utilisateur ut = null;
         try 
         {
-            Statement stmt=connect.createStatement(); 
+            Statement stmtU1=connect.createStatement(); 
 
             // récupérer l'utilisateur en fonction de son id
-            ResultSet rs=stmt.executeQuery("SELECT * FROM utilisateur WHERE id = '"+id+"'");  
+            ResultSet rsU1=stmtU1.executeQuery("SELECT * FROM utilisateur WHERE id = '"+id+"'");  
 
             
             // sinon récupérer l'utilisateur et le rendre
-            while (rs.next())  // si rien n'est trouvé on ne rentre pas dans le while
+            while (rsU1.next())  // si rien n'est trouvé on ne rentre pas dans le while
             {                
-                String email = rs.getString(2);
-                String passwd = rs.getString(3);
-                String nom = rs.getString(4);
-                String prenom = rs.getString(5);
-                int droit = rs.getInt(6);
+                String email = rsU1.getString(2);
+                String passwd = rsU1.getString(3);
+                String nom = rsU1.getString(4);
+                String prenom = rsU1.getString(5);
+                int droit = rsU1.getInt(6);
                 
                 // Créer l'utilisateur
                 ut = new Utilisateur(id, email, passwd, nom, prenom, droit);
@@ -89,26 +91,66 @@ public class UtilisateurDAO extends DAO
         Utilisateur ut = null;
         try 
         {
-            Statement stmt=connect.createStatement(); 
+            Statement stmtU1=connect.createStatement(); 
 
             // récupérer l'utilisateur en fonction de son email
-            ResultSet rs=stmt.executeQuery("SELECT * FROM utilisateur WHERE email = '"+email+"'");  
+            ResultSet rsU1=stmtU1.executeQuery("SELECT * FROM utilisateur WHERE email = '"+email+"'");  
 
             // regarder si on a des résultats :
             // récupération du résultat de l'ordre
-            ResultSetMetaData rsetMeta = rs.getMetaData();
+            ResultSetMetaData rsetMeta = rsU1.getMetaData();
 
             // calcul du nombre de colonnes  (inutile ici)
             //int nbColonne = rsetMeta.getColumnCount();
             
             // sinon récupérer l'utilisateur et le rendre
-            while (rs.next())  // si rien n'est trouvé on ne rentre pas dans le while
+            while (rsU1.next())  // si rien n'est trouvé on ne rentre pas dans le while
             {                
-                int id = rs.getInt(1);
-                String passwd = rs.getString(3);
-                String nom = rs.getString(4);
-                String prenom = rs.getString(5);
-                int droit = rs.getInt(6);
+                int id = rsU1.getInt(1);
+                String passwd = rsU1.getString(3);
+                String nom = rsU1.getString(4);
+                String prenom = rsU1.getString(5);
+                int droit = rsU1.getInt(6);
+                
+                // Créer l'utilisateur
+                ut = new Utilisateur(id, email, passwd, nom, prenom, droit);
+            }
+
+            
+        }
+        catch(SQLException e) 
+        {
+            System.out.println(e.getMessage());
+        } 
+        
+        // retourner l'utilisateur rempli ou null
+        return ut;
+    }
+    
+    public Utilisateur find_nom_prenom (String nom, String prenom)
+    {
+        Utilisateur ut = null;
+        try 
+        {
+            Statement stmtU1=connect.createStatement(); 
+
+            // récupérer l'utilisateur en fonction de son email
+            ResultSet rsU1=stmtU1.executeQuery("SELECT * FROM utilisateur WHERE Nom = '"+nom+"' AND Prenom = '"+prenom+"'");  
+
+            // regarder si on a des résultats :
+            // récupération du résultat de l'ordre
+            ResultSetMetaData rsetMeta = rsU1.getMetaData();
+
+            // calcul du nombre de colonnes  (inutile ici)
+            //int nbColonne = rsetMeta.getColumnCount();
+            
+            // sinon récupérer l'utilisateur et le rendre
+            while (rsU1.next())  // si rien n'est trouvé on ne rentre pas dans le while
+            {                
+                int id = rsU1.getInt(1);
+                String passwd = rsU1.getString(3);
+                String email = rsU1.getString(2);
+                int droit = rsU1.getInt(6);
                 
                 // Créer l'utilisateur
                 ut = new Utilisateur(id, email, passwd, nom, prenom, droit);

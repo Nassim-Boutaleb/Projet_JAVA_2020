@@ -37,7 +37,7 @@ public class Etudiant extends Utilisateur
  
    
     public String getNumero () { return m_numero ; }
-    public Groupe getIdGroupe () { return groupe; }
+    public Groupe getGroupe () { return groupe; }
     
     /**
      *

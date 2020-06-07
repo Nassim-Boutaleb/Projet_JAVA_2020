@@ -41,9 +41,9 @@ public abstract class DAO <T>
     }
     
     // Méthodes abstraites à implémenter par les classes filles
-    public abstract boolean create ();
-    public abstract boolean update ();
-    public abstract boolean delete ();
+    public abstract int create (T obj);
+    public abstract int update (T obj);
+    public abstract int delete (T obj);
     public abstract T find (int id);
     
     

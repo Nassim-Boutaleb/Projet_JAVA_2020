@@ -14,7 +14,7 @@ import java.util.ArrayList;
  *
  * @author Oumou Sow, Nassim Boutaleb, Grace Gnenago
  */
-public class PromotionDAO extends DAO
+public class PromotionDAO extends DAO<Promotion>
 {
     public PromotionDAO(Connection conn)
     {
@@ -28,17 +28,19 @@ public class PromotionDAO extends DAO
     }
 
     @Override
-    public boolean create() {
+    public int create(Promotion promo) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public boolean update() {
+    public int update(Promotion promo) 
+    {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public boolean delete() {
+    public int delete(Promotion promo) 
+    {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -53,22 +55,31 @@ public class PromotionDAO extends DAO
     public Promotion find(int id) 
     {
         Promotion promo;
+        ArrayList<Groupe> liste_groupes = new ArrayList<>(100);
         promo = null;
         try 
         {
-            Statement stmt=connect.createStatement(); 
+            Statement stmtP1=connect.createStatement(); 
 
-            // récupérer Promotion en fonction de son nom
-            ResultSet rs=stmt.executeQuery("SELECT * FROM promotion WHERE id = '"+id+"'");  
+            // récupérer Promotion en fonction de son id
+            ResultSet rsP1=stmtP1.executeQuery("SELECT * FROM promotion WHERE id = '"+id+"'");  
             
-            // sinon récupérer Promotion et le rendre
-            while (rs.next())  // si rien n'est trouvé on ne rentre pas dans le while
+            while (rsP1.next())  // si rien n'est trouvé on ne rentre pas dans le while
             {                
-                String nom = rs.getString(2);
+                String nom = rsP1.getString(2);
                 
+                Statement stmtP2=connect.createStatement(); 
+                // récupérer Promotion en fonction de son id
+                ResultSet rsP2=stmtP2.executeQuery("SELECT * FROM groupe WHERE IdPromotion = '"+id+"'"); 
+                
+                while (rsP2.next())
+                {
+                    Groupe gp = new Groupe(rsP2.getInt(1), rsP2.getString(2), id);
+                    liste_groupes.add (gp);
+                }
                 
                 // Créer Promotion
-                promo = new Promotion(id,nom);
+                promo = new Promotion(id,nom,liste_groupes);
             }
 
             
@@ -95,21 +106,32 @@ public class PromotionDAO extends DAO
     {
         Promotion promo;
         promo = null;
+        ArrayList<Groupe> liste_groupes = new ArrayList<>(100);
         try 
         {
-            Statement stmt=connect.createStatement(); 
+            Statement stmtP1=connect.createStatement(); 
 
             // récupérer Promotion en fonction de son nom
-            ResultSet rs=stmt.executeQuery("SELECT * FROM promotion WHERE nom = '"+nom+"'");  
+            ResultSet rsP1=stmtP1.executeQuery("SELECT * FROM promotion WHERE nom = '"+nom+"'");  
 
             
             // sinon récupérer Promotion et le rendre
-            while (rs.next())  // si rien n'est trouvé on ne rentre pas dans le while
+            while (rsP1.next())  // si rien n'est trouvé on ne rentre pas dans le while
             {                
-                int id = rs.getInt(1);
+                int id = rsP1.getInt(1);
                
+                Statement stmtP2=connect.createStatement(); 
+                // récupérer Promotion en fonction de son id
+                ResultSet rsP2=stmtP2.executeQuery("SELECT * FROM groupe WHERE IdPromotion = '"+id+"'"); 
+                
+                while (rsP2.next())
+                {
+                    Groupe gp = new Groupe(rsP2.getInt(1), rsP2.getString(2), id);
+                    liste_groupes.add (gp);
+                }
+                
                 // Créer Promotion
-                promo = new Promotion(id,nom);
+                promo = new Promotion(id,nom,liste_groupes);
             }
 
             
@@ -135,21 +157,38 @@ public class PromotionDAO extends DAO
         
         try 
         {
-            Statement stmt=connect.createStatement(); 
+            Statement stmtP1=connect.createStatement(); 
 
             
-            ResultSet rs=stmt.executeQuery("SELECT * FROM promotion");  
+            ResultSet rsP1=stmtP1.executeQuery("SELECT * FROM promotion");  
 
+            System.out.println("BBBJL");
             
-            
-            while (rs.next())  // si rien n'est trouvé on ne rentre pas dans le while
+            while (rsP1.next())  // si rien n'est trouvé on ne rentre pas dans le while
             {                
-                int id = rs.getInt(1);
-                String nom = rs.getString(2);
+                System.out.println("HJ");
+                int id = rsP1.getInt(1);
+                String nom = rsP1.getString(2);
                
-                // Créer Promotion
-                Promotion promo = new Promotion(id,nom);
+                Statement stmtP2=connect.createStatement(); 
+                // récupérer Promotion en fonction de son id
+                ResultSet rsP2=stmtP2.executeQuery("SELECT * FROM groupe WHERE IdPromotion = '"+id+"'"); 
                 
+                ArrayList<Groupe> liste_groupes = new ArrayList<>(100);
+                
+                while (rsP2.next())
+                {
+                    System.out.println("OKKKKKKK");
+                    int idGp = rsP2.getInt(1);
+                    String nomGp = rsP2.getString(2);
+                    Groupe gp = new Groupe(idGp, nomGp , id);
+                    System.out.println("?KL"+id);
+                    liste_groupes.add (gp);
+                }
+                
+                // Créer Promotion
+                Promotion promo = new Promotion(id,nom,liste_groupes);
+                System.out.println("HEYYYY");
                 // L'ajouter à la liste
                 liste_promos.add(promo);
                 

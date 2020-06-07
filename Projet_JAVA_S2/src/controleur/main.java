@@ -10,6 +10,7 @@ import Modele.*;
 import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
 import java.sql.*;
+import java.util.ArrayList;
 
 /**
  *
@@ -26,10 +27,20 @@ public class main {
     
     public static void main(String[] args) {
        
-        //LoginPageControleur lpc = new LoginPageControleur();
+        LoginPageControleur lpc = new LoginPageControleur();
+       
+        //AdminGestionControleur agc = new AdminGestionControleur();
+        //agc.ouvrirAdminpage();
         
-        AdminGestionControleur agc = new AdminGestionControleur();
-        agc.ouvrirAdminpage();
+        /*ArrayList<Seance> ls = Seance.charger_seance_BDD_semaine_groupe(23, 5);
+        System.out.println(ls.size());
+        for (int i = 0; i <ls.size(); i++) 
+        {
+            System.out.println(ls.get(i).getCours().getNom());
+        } */
+        
+        
+        
         
     }
     

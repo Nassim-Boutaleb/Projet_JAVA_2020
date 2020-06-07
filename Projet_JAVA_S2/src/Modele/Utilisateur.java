@@ -80,4 +80,14 @@ public class Utilisateur {
         return ut;
     }
     
+    public static Utilisateur charger_utilisateur_BDD_nom_prenom (String nom, String prenom)
+    {
+        
+        // récupérer l'utilisateur depuis la BDD
+        UtilisateurDAO udao = new UtilisateurDAO();
+        Utilisateur ut = udao.find_nom_prenom(nom, prenom);
+        
+        return ut;
+    }
+    
 }

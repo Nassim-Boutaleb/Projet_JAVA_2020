@@ -84,8 +84,8 @@ public class LoginPage extends JFrame implements ActionListener
         //Créer les zones de texte
         //T_email = new JTextField("Entrez votre email ECE ",30);
         //T_passwd = new JTextField("Entrez votre mot de passe", 30);
-        T_email = new JTextField("oumou.sow@ece.fr");
-        T_passwd = new JTextField("oumou");
+        T_email = new JTextField("nassim.boutaleb@ece.fr");
+        T_passwd = new JTextField("nassim");
         
         // Créer le bouton
         B_connexion = new JButton("Login");

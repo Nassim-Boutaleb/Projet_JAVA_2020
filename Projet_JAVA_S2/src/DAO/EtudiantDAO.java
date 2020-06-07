@@ -12,7 +12,7 @@ import java.util.ArrayList;
  *
  * @author Oumou Sow, Nassim Boutaleb, Grace Gnenago
  */
-public class EtudiantDAO extends DAO
+public class EtudiantDAO extends DAO <Etudiant>
 {
     
     public EtudiantDAO (Connection conn)
@@ -26,17 +26,19 @@ public class EtudiantDAO extends DAO
     }
 
     @Override
-    public boolean create() {
+    public int create(Etudiant etu) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public boolean update() {
+    public int update(Etudiant etu) 
+    {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public boolean delete() {
+    public int delete(Etudiant etu) 
+    {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -53,7 +55,7 @@ public class EtudiantDAO extends DAO
         Etudiant etu = null;
         try 
         {
-            Statement stmt=connect.createStatement(); 
+            Statement stmtE4=connect.createStatement(); 
             
             // récupérer l'utilisateur associé ainsi que les données
             Utilisateur utilisat = Utilisateur.charger_utilisateur_BDD(id);
@@ -64,16 +66,16 @@ public class EtudiantDAO extends DAO
             int droit = utilisat.getDroit();
 
             // récupérer l'Etudiant en fonction de son id
-            ResultSet rs=stmt.executeQuery("SELECT * FROM etudiant WHERE IdUtilisateur = '"+id+"'");  
+            ResultSet rsE4=stmtE4.executeQuery("SELECT * FROM etudiant WHERE IdUtilisateur = '"+id+"'");  
 
             
             // sinon récupérer l'Etudiant et le rendre
-            while (rs.next())  // si rien n'est trouvé on ne rentre pas dans le while
+            while (rsE4.next())  // si rien n'est trouvé on ne rentre pas dans le while
             {                
                
                 
-                String numero = rs.getString(2);
-                int id_groupe=rs.getInt(3);
+                String numero = rsE4.getString(2);
+                int id_groupe=rsE4.getInt(3);
                 Groupe groupe= Groupe.charger_groupe_BDD(id_groupe);
                
                 // Créer l'Etudiant
@@ -108,18 +110,18 @@ public class EtudiantDAO extends DAO
             
         try 
         {
-            Statement stmt=connect.createStatement(); 
+            Statement stmtE4=connect.createStatement(); 
 
             // récupérer l'Etudiant en fonction de son id utilisateur
-            ResultSet rs=stmt.executeQuery("SELECT * FROM etudiant WHERE IdUtilisateur = '"+id+"'");  
+            ResultSet rsE4=stmtE4.executeQuery("SELECT * FROM etudiant WHERE IdUtilisateur = '"+id+"'");  
 
             
             // sinon récupérer l'Etudiant et le rendre
-            while (rs.next())  // si rien n'est trouvé on ne rentre pas dans le while
+            while (rsE4.next())  // si rien n'est trouvé on ne rentre pas dans le while
             {                
                
-                String numero = rs.getString(2);
-               int id_groupe=rs.getInt(3);
+                String numero = rsE4.getString(2);
+                int id_groupe=rsE4.getInt(3);
                 Groupe groupe= Groupe.charger_groupe_BDD(id_groupe);
                 
                
@@ -157,18 +159,18 @@ public class EtudiantDAO extends DAO
         
         try 
         {
-            Statement stmt=connect.createStatement(); 
+            Statement stmtE4=connect.createStatement(); 
 
             // récupérer l'Etudiant en fonction de son email
-            ResultSet rs=stmt.executeQuery("SELECT * FROM etudiant WHERE IdUtilisateur = '"+id+"'");  
+            ResultSet rsE4=stmtE4.executeQuery("SELECT * FROM etudiant WHERE IdUtilisateur = '"+id+"'");  
 
             
             // sinon récupérer l'Etudiant et le rendre
-            while (rs.next())  // si rien n'est trouvé on ne rentre pas dans le while
+            while (rsE4.next())  // si rien n'est trouvé on ne rentre pas dans le while
             {                
  
-                String numero = rs.getString(2);
-                int id_groupe=rs.getInt(3);
+                String numero = rsE4.getString(2);
+                int id_groupe=rsE4.getInt(3);
                 Groupe groupe= Groupe.charger_groupe_BDD(id_groupe);
                 
                 // Créer l'Etudiant
@@ -192,20 +194,20 @@ public class EtudiantDAO extends DAO
         ArrayList<Etudiant> liste_etudiants = new ArrayList<>(100);
        try 
         {
-            Statement stmt=connect.createStatement(); 
+            Statement stmtE4=connect.createStatement(); 
 
             // récupérer tous les étudiants
-            ResultSet rs=stmt.executeQuery("SELECT * FROM etudiant ");  
+            ResultSet rsE4=stmtE4.executeQuery("SELECT * FROM etudiant ");  
 
             
             
-            while (rs.next())  // si rien n'est trouvé on ne rentre pas dans le while
+            while (rsE4.next())  // si rien n'est trouvé on ne rentre pas dans le while
             {                
-                int id = rs.getInt(1);
-                String numero = rs.getString(2);
+                int id = rsE4.getInt(1);
+                String numero = rsE4.getString(2);
                 
                 // Récupérer le groupe
-                int idGroupe = rs.getInt(3);
+                int idGroupe = rsE4.getInt(3);
                 Groupe groupe = Groupe.charger_groupe_BDD(idGroupe);
                 
                 // Il faut maintenant récupérer les infos contenues dans la table utilisateur à partir de l'ID

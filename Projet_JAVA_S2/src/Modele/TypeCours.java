@@ -6,6 +6,7 @@
 package Modele;
 
 import DAO.*;
+import java.util.ArrayList;
 
 
 /**
@@ -66,6 +67,20 @@ public class TypeCours
         TypeCours ut = udao.find(id);
         
         return ut;
+    }
+    
+    /**
+     * Cette méthode retourne la liste de tous les type_cours stockés en BDD
+     * @return
+     */
+    public static ArrayList<TypeCours> get_liste_types_cours ()
+    {
+        ArrayList<TypeCours> liste_typesCours = new ArrayList<>(100);
+        
+        TypeCoursDAO tcdao = new TypeCoursDAO();
+        liste_typesCours = tcdao.get_all_types_cours();
+        
+        return liste_typesCours;
     }
     
 }

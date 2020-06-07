@@ -6,6 +6,7 @@
 package Modele;
 
 import DAO.*;
+import java.util.ArrayList;
 
 /**
  *
@@ -90,6 +91,42 @@ public class Cours
         Cours ut = udao.find(id);
         
         return ut;
+    }
+    
+    /**
+     * Cette méthode retourne la liste de tous les cours stockés en BDD
+     * @return
+     */
+    public static ArrayList<Cours> get_liste_cours ()
+    {
+        ArrayList<Cours> liste_cours = new ArrayList<>(100);
+        
+        CoursDAO cdao = new CoursDAO();
+        liste_cours = cdao.get_all_cours();
+        
+        return liste_cours;
+    }
+    
+    /**
+     * Cette méthode insère un cours dans la BDD
+     * @return
+     */
+    public int inserer_cours_BDD ()
+    {
+        CoursDAO cdao = new CoursDAO();
+        int success = cdao.create(this);
+        return success; 
+    }
+    
+    /**
+     * Cette méthode change le nom d'un cours dans la BDD
+     * @return
+     */
+    public int renommer_cours (String nouveauNom)
+    {
+        CoursDAO cdao = new CoursDAO();
+        int success = cdao.update(this,nouveauNom);
+        return success; 
     }
     
 }
